@@ -1,5 +1,1 @@
-import App from "./app/App"
-
-export {
-    App
-}
+export * from "./app/App"

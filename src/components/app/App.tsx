@@ -1,12 +1,12 @@
 import React, {FormEvent, useState} from 'react';
 import './App.css';
-import {createSerialConnection, ReadHandler} from "../../services/SerialConnector";
+import {createSerialConnection, ReadHandler} from "../../services";
 
 const handleRead: ReadHandler = (value) => {
     console.log(value)
 }
 
-export default function App() {
+export const App = () => {
     const [writer, setWriter] = useState<WritableStreamDefaultWriter<string> | null>(null)
 
     const handleCommandSendSubmit = async (event: FormEvent) => {
