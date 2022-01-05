@@ -1,6 +1,6 @@
-export type ReadHandler = (value: string | undefined) => void;
+export type ReadHandler = (value: string) => void;
 
-type CreateSerialConnection = ({readHandler}: { readHandler: ReadHandler }) => Promise<WritableStreamDefaultWriter<string>>;
+type CreateSerialConnection = ({readHandler}: { readHandler: ReadHandler }) => Promise<{ writer: WritableStreamDefaultWriter<string> }>;
 
 class LineBreakTransformer implements Transformer {
     private chunks: string;
@@ -54,7 +54,9 @@ const readFromPort: (port: SerialPort, readHandler: ReadHandler) => Promise<void
                 reader.releaseLock()
                 break
             }
-            readHandler(value)
+            if (value) {
+                readHandler(value)
+            }
         }
 
         // } catch (error) {
@@ -78,5 +80,5 @@ export const createSerialConnection: CreateSerialConnection = async ({readHandle
     readFromPort(openedPort, readHandler).then(() => {
     });
 
-    return await getPortWriter(openedPort);
+    return {writer: await getPortWriter(openedPort)};
 };

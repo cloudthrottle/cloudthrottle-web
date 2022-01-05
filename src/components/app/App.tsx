@@ -2,12 +2,9 @@ import React, {FormEvent, useState} from 'react';
 import './App.css';
 import {createSerialConnection, ReadHandler} from "../../services";
 
-const handleRead: ReadHandler = (value) => {
-    console.log(value)
-}
-
 export const App = () => {
     const [writer, setWriter] = useState<WritableStreamDefaultWriter<string> | null>(null)
+    const [readLog, setReadLog] = useState<string[]>([])
 
     const handleCommandSendSubmit = async (event: FormEvent) => {
         event.preventDefault()
@@ -26,9 +23,13 @@ export const App = () => {
         const formData = new FormData(target as HTMLFormElement)
         const communicator = formData.get('communicator')
         if (communicator === "serial") {
-            const writer = await createSerialConnection({readHandler: handleRead});
+            const {writer} = await createSerialConnection({readHandler: handleRead});
             setWriter(writer)
         }
+    }
+
+    const handleRead: ReadHandler = (value) => {
+        setReadLog(prevState => [value, ...prevState])
     }
 
     return (
@@ -45,6 +46,10 @@ export const App = () => {
                 <input type="text" name="command"/>
                 <button type="submit">Send</button>
             </form>
+
+            <ul>
+                {readLog.map((log, index) => <li key={index}>{log}</li>)}
+            </ul>
         </div>
     )
 }
