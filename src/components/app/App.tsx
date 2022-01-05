@@ -1,13 +1,15 @@
 import React, {FormEvent, useState} from 'react';
 import './App.css';
 import {createSerialConnection, ReadHandler} from "../../services";
-import { CommsLogs } from '..';
+import {CommsLogs} from '..';
+import {BrowserRouter as Router, Link, Route, Routes} from "react-router-dom";
 
+type HandleCommandSendSubmit = (event: React.FormEvent) => Promise<void>;
 export const App = () => {
     const [writer, setWriter] = useState<WritableStreamDefaultWriter<string> | null>(null)
     const [readLog, setReadLog] = useState<string[]>([])
 
-    const handleCommandSendSubmit = async (event: FormEvent) => {
+    const handleCommandSendSubmit: HandleCommandSendSubmit = async (event: FormEvent) => {
         event.preventDefault()
         const {target} = event
         const formData = new FormData(target as HTMLFormElement)
@@ -44,12 +46,34 @@ export const App = () => {
                 <button type="submit">Connect</button>
             </form>
 
-            <form action="/communications/send" method="post" onSubmit={handleCommandSendSubmit}>
-                <input type="text" name="command"/>
-                <button type="submit">Send</button>
-            </form>
-
-            <CommsLogs logs={readLog}/>
+            <Router>
+                <nav>
+                    <Link to="/communications/send">Send Comms</Link>
+                    <Link to="/logs">View Logs</Link>
+                </nav>
+                <Routes>
+                    <Route path="/communications/send"
+                           element={<SendCommsForm handleCommandSendSubmit={handleCommandSendSubmit}/>}
+                    />
+                    <Route path="/logs"
+                           element={<CommsLogs logs={readLog}/>}
+                    />
+                </Routes>
+            </Router>
         </div>
     )
+}
+
+type SendCommsFormProps = {
+    handleCommandSendSubmit: HandleCommandSendSubmit
+}
+
+const SendCommsForm = ({handleCommandSendSubmit}: SendCommsFormProps) => {
+    return (<div>
+        <h3>Send Comms</h3>
+        <form action="/communications/send" method="post" onSubmit={handleCommandSendSubmit}>
+            <input type="text" name="command"/>
+            <button type="submit">Send</button>
+        </form>
+    </div>)
 }
