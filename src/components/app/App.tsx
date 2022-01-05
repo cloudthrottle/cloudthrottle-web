@@ -29,6 +29,7 @@ export const App = () => {
     }
 
     const handleRead: ReadHandler = (value) => {
+        console.debug("READ: ", value)
         setReadLog(prevState => [value, ...prevState])
     }
 

@@ -66,7 +66,6 @@ const readFromPort: (port: SerialPort, readHandler: ReadHandler) => Promise<void
 };
 
 const getPortWriter: (openedPort: SerialPort) => Promise<WritableStreamDefaultWriter<string>> = async (openedPort: SerialPort) => {
-    console.log("Getting port writer");
     const textEncoder = new TextEncoderStream();
     textEncoder.readable.pipeTo(openedPort.writable as WritableStream<Uint8Array>).then(() => {
     });
