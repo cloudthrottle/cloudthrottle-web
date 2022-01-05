@@ -2,7 +2,7 @@ export type ReadHandler = (value: string | undefined) => void;
 
 type CreateSerialConnection = ({readHandler}: { readHandler: ReadHandler }) => Promise<WritableStreamDefaultWriter<string>>;
 
-class LineBreakTransformer implements Transformer{
+class LineBreakTransformer implements Transformer {
     private chunks: string;
 
     constructor() {
@@ -10,7 +10,7 @@ class LineBreakTransformer implements Transformer{
         this.chunks = "";
     }
 
-    transform(chunk: string, controller:TransformStreamDefaultController<string>) : void {
+    transform(chunk: string, controller: TransformStreamDefaultController<string>): void {
         // Append new chunks to existing chunks.
         this.chunks = this.chunks + chunk;
         // For each line breaks in chunks, send the parsed lines out.
