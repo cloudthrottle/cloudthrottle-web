@@ -1,6 +1,7 @@
 import React, {FormEvent, useState} from 'react';
 import './App.css';
 import {createSerialConnection, ReadHandler} from "../../services";
+import { CommsLogs } from '..';
 
 export const App = () => {
     const [writer, setWriter] = useState<WritableStreamDefaultWriter<string> | null>(null)
@@ -48,9 +49,7 @@ export const App = () => {
                 <button type="submit">Send</button>
             </form>
 
-            <ul>
-                {readLog.map((log, index) => <li key={index}>{log}</li>)}
-            </ul>
+            <CommsLogs logs={readLog}/>
         </div>
     )
 }
