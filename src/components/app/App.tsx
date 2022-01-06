@@ -1,15 +1,16 @@
 import React, {FormEvent, useState} from 'react';
 import './App.css';
 import {createSerialConnection, ReadHandler} from "../../services";
-import {CommsLogs} from '..';
-import {BrowserRouter as Router, Link, Route, Routes} from "react-router-dom";
+import {Link, Route, Routes} from "react-router-dom";
+import {Communications, CommunicationsProps, Locos, LocosProps} from "../../pages";
+import {HandleSubmit} from "../../utils";
 
-type HandleCommandSendSubmit = (event: React.FormEvent) => Promise<void>;
 export const App = () => {
     const [writer, setWriter] = useState<WritableStreamDefaultWriter<string> | null>(null)
     const [readLog, setReadLog] = useState<string[]>([])
 
-    const handleCommandSendSubmit: HandleCommandSendSubmit = async (event: FormEvent) => {
+    const handleCommandSendSubmit: HandleSubmit = async (event: FormEvent) => {
+        console.debug("handleCommandSendSubmit")
         event.preventDefault()
         const {target} = event
         const formData = new FormData(target as HTMLFormElement)
@@ -36,6 +37,26 @@ export const App = () => {
         setReadLog(prevState => [value, ...prevState])
     }
 
+    const handleNewLocoSubmit: HandleSubmit = async (event: FormEvent) => {
+        console.debug("handleNewLocoSubmit")
+        event.preventDefault()
+        const {target} = event
+        const formData = new FormData(target as HTMLFormElement)
+        const name = formData.get('name')
+        console.log(name);
+        return
+    }
+
+    const communicationsProps: CommunicationsProps = {
+        handleCommandSendSubmit,
+        readLog
+    }
+
+    const locosProps: LocosProps = {
+        locos: [],
+        handleNewLocoSubmit
+    }
+
     return (
         <div>
             <h1>Cloud Throttle</h1>
@@ -46,29 +67,24 @@ export const App = () => {
                 <button type="submit">Connect</button>
             </form>
 
-            <Router>
-                <nav>
-                    <Link to="/communications/send">Send Comms</Link>
-                    <Link to="/logs">View Logs</Link>
-                </nav>
-                <Routes>
-                    <Route path="/communications/send"
-                           element={<SendCommsForm handleCommandSendSubmit={handleCommandSendSubmit}/>}
-                    />
-                    <Route path="/logs"
-                           element={<CommsLogs logs={readLog}/>}
-                    />
-                </Routes>
-            </Router>
+            <nav>
+                <Link to="/locos">Locos</Link>
+                <Link to="/communications">Comms</Link>
+            </nav>
+
+            <Routes>
+                <Route path="/communications/*" element={<Communications {...communicationsProps}/>}/>
+                <Route path="/locos/*" element={<Locos {...locosProps}/>}/>
+            </Routes>
         </div>
     )
 }
 
-type SendCommsFormProps = {
-    handleCommandSendSubmit: HandleCommandSendSubmit
+export type SendCommsFormProps = {
+    handleCommandSendSubmit: HandleSubmit
 }
 
-const SendCommsForm = ({handleCommandSendSubmit}: SendCommsFormProps) => {
+export const SendCommsForm = ({handleCommandSendSubmit}: SendCommsFormProps) => {
     return (<div>
         <h3>Send Comms</h3>
         <form action="/communications/send" method="post" onSubmit={handleCommandSendSubmit}>

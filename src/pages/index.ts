@@ -1,2 +1,2 @@
-export * from "./app"
+export * from "./locos"
 export * from "./communications"
