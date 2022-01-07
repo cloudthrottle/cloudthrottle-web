@@ -1,10 +1,9 @@
 import React from "react"
 import {Link, Route, Routes} from "react-router-dom"
-import {HandleSubmit} from "../../utils";
+import {LocosIndex} from "./index/LocosIndex";
+import {LocosForm} from "./form/LocosForm";
 
-export type LocosProps = LocoListProps & NewLocoFormProps
-
-export const Locos = ({locos, handleNewLocoSubmit}: LocosProps) => {
+export const Locos = () => {
     return (
         <div>
             <h2>Locos</h2>
@@ -14,40 +13,9 @@ export const Locos = ({locos, handleNewLocoSubmit}: LocosProps) => {
             </nav>
 
             <Routes>
-                <Route index element={<LocosList locos={locos}/>}/>
-                <Route path="new" element={<NewLocoForm handleNewLocoSubmit={handleNewLocoSubmit}/>}/>
+                <Route index element={<LocosIndex/>}/>
+                <Route path="new" element={<LocosForm/>}/>
             </Routes>
-        </div>
-    )
-}
-
-interface LocoListProps {
-    locos: string[]
-}
-
-export const LocosList = ({locos}: LocoListProps) => {
-    return (
-        <div>
-            <ul>
-                {locos.map((loco, index) => <li key={index}>{loco}</li>)}
-            </ul>
-        </div>
-    )
-}
-
-interface NewLocoFormProps {
-    handleNewLocoSubmit: HandleSubmit
-}
-
-export const NewLocoForm = ({handleNewLocoSubmit}: NewLocoFormProps) => {
-    return (
-        <div>
-            <h2>New Loco</h2>
-            <form action="locos/new" method="post" onSubmit={handleNewLocoSubmit}>
-                <label htmlFor="name">Name</label>
-                <input type="text" id="name" name="name"/>
-                <button type="submit">Save</button>
-            </form>
         </div>
     )
 }

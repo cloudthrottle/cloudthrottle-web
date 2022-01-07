@@ -1,7 +1,8 @@
 import React, {createContext, PropsWithChildren, useContext, useMemo, useState} from "react";
+import {Locos} from "../types";
 
 export type GlobalState = {
-    locos: string[]
+    locos: Locos
 }
 const initialState: GlobalState = {
     locos: []

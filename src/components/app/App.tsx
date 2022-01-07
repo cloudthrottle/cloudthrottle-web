@@ -2,16 +2,12 @@ import React, {FormEvent, useState} from 'react';
 import './App.css';
 import {createSerialConnection, ReadHandler} from "../../services";
 import {Link, Route, Routes} from "react-router-dom";
-import {Communications, CommunicationsProps, Locos, LocosProps} from "../../pages";
+import {Communications, CommunicationsProps, Locos} from "../../pages";
 import {HandleSubmit} from "../../utils";
-import {useGlobalContext} from "../../contexts";
 
 export const App = () => {
     const [writer, setWriter] = useState<WritableStreamDefaultWriter<string> | null>(null)
     const [readLog, setReadLog] = useState<string[]>([])
-
-    const [globalState, setGlobalState] = useGlobalContext();
-    const {locos} = globalState
 
     const handleCommandSendSubmit: HandleSubmit = async (event: FormEvent) => {
         console.debug("handleCommandSendSubmit")
@@ -41,35 +37,9 @@ export const App = () => {
         setReadLog(prevState => [value, ...prevState])
     }
 
-    const handleNewLocoSubmit: HandleSubmit = async (event: FormEvent) => {
-        console.debug("handleNewLocoSubmit")
-        event.preventDefault()
-        const {target} = event
-        const formData = new FormData(target as HTMLFormElement)
-        const name = formData.get('name')
-        if (!name) {
-            return
-        }
-        setGlobalState(prevState => {
-            const {locos: prevLocos} = prevState
-            const locos = [...prevLocos, name.toString()]
-            return {...prevState, locos}
-        })
-
-        // @ts-ignore
-        target.reset()
-        return
-    }
-
     const communicationsProps: CommunicationsProps = {
         handleCommandSendSubmit,
         readLog
-    }
-
-
-    const locosProps: LocosProps = {
-        locos,
-        handleNewLocoSubmit
     }
 
     return (
@@ -89,7 +59,7 @@ export const App = () => {
 
             <Routes>
                 <Route path="/communications/*" element={<Communications {...communicationsProps}/>}/>
-                <Route path="/locos/*" element={<Locos {...locosProps}/>}/>
+                <Route path="/locos/*" element={<Locos/>}/>
             </Routes>
         </div>
     )
