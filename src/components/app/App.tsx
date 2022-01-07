@@ -1,12 +1,11 @@
 import React, {FormEvent} from 'react';
 import './App.css';
-import {createSerialConnection, ReadHandler} from "../../services";
 import {Link, Route, Routes} from "react-router-dom";
 import {Communications, Locos} from "../../pages";
 import {HandleSubmit, prependLogItem} from "../../utils";
 import {useGlobalContext} from "../../contexts";
 import {CommunicationsState, LogItem} from "../../types";
-
+import {createSerialConnection, ReadHandler} from "@cloudthrottle/dcc-ex--serial-communicator";
 export const App = () => {
     const [, setGlobalState] = useGlobalContext();
 
