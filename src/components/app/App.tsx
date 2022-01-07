@@ -2,26 +2,13 @@ import React, {FormEvent} from 'react';
 import './App.css';
 import {createSerialConnection, ReadHandler} from "../../services";
 import {Link, Route, Routes} from "react-router-dom";
-import {Communications, CommunicationsProps, Locos} from "../../pages";
+import {Communications, Locos} from "../../pages";
 import {HandleSubmit} from "../../utils";
 import {useGlobalContext} from "../../contexts";
 import {CommunicationsState} from "../../types";
 
 export const App = () => {
-    const [globalState, setGlobalState] = useGlobalContext();
-    const {communications: {writer}} = globalState
-
-    const handleCommandSendSubmit: HandleSubmit = async (event: FormEvent) => {
-        console.debug("handleCommandSendSubmit")
-        event.preventDefault()
-        const {target} = event
-        const formData = new FormData(target as HTMLFormElement)
-        const command = formData.get('command')
-        if (!writer || !command) {
-            return
-        }
-        await writer.write(command.toString())
-    }
+    const [, setGlobalState] = useGlobalContext();
 
     const handleConnectionRequestSubmit = async (event: FormEvent) => {
         event.preventDefault()
@@ -49,10 +36,6 @@ export const App = () => {
         })
     }
 
-    const communicationsProps: CommunicationsProps = {
-        handleCommandSendSubmit,
-    }
-
     return (
         <div>
             <h1>Cloud Throttle</h1>
@@ -69,7 +52,7 @@ export const App = () => {
             </nav>
 
             <Routes>
-                <Route path="/communications/*" element={<Communications {...communicationsProps}/>}/>
+                <Route path="/communications/*" element={<Communications/>}/>
                 <Route path="/locos/*" element={<Locos/>}/>
             </Routes>
         </div>
