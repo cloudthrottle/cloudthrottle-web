@@ -29,7 +29,7 @@ export const LocosList = ({locos}: LocoListProps) => {
     return (
         <div>
             <ul>
-                {locos.map(loco => <li>{loco}</li>)}
+                {locos.map((loco, index) => <li key={index}>{loco}</li>)}
             </ul>
         </div>
     )
