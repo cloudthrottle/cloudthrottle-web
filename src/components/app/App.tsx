@@ -3,9 +3,9 @@ import './App.css';
 import {createSerialConnection, ReadHandler} from "../../services";
 import {Link, Route, Routes} from "react-router-dom";
 import {Communications, Locos} from "../../pages";
-import {HandleSubmit} from "../../utils";
+import {HandleSubmit, prependLogItem} from "../../utils";
 import {useGlobalContext} from "../../contexts";
-import {CommunicationsState} from "../../types";
+import {CommunicationsState, LogItem} from "../../types";
 
 export const App = () => {
     const [, setGlobalState] = useGlobalContext();
@@ -27,13 +27,11 @@ export const App = () => {
 
     const handleRead: ReadHandler = (value) => {
         console.debug("READ: ", value)
-        setGlobalState((prevState) => {
-            const {communications: prevComms} = prevState
-            const {logs: prevLogs} = prevComms
-            const logs = [value, ...prevLogs]
-            const communications: CommunicationsState = {...prevComms, logs}
-            return {...prevState, communications}
-        })
+        const log: LogItem = {
+            message: value,
+            kind: "received"
+        }
+        prependLogItem(setGlobalState, log);
     }
 
     return (

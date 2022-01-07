@@ -1,1 +1,2 @@
-export * from "./CommunicationsLogs"
+export * from "./CommunicationsLogsList"
+export * from "./CommunicationsLog"

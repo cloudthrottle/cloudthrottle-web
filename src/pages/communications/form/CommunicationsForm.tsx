@@ -1,10 +1,11 @@
 import React, {FormEvent} from 'react'
 import {SendCommsForm} from "../../../components";
-import {HandleSubmit} from "../../../utils";
+import {HandleSubmit, prependLogItem} from "../../../utils";
 import {useGlobalContext} from "../../../contexts";
+import {LogItem} from "../../../types";
 
 export const CommunicationsForm = () => {
-    const [{communications: {writer}}] = useGlobalContext();
+    const [{communications: {writer}}, setGlobalState] = useGlobalContext();
 
     const handleCommandSendSubmit: HandleSubmit = async (event: FormEvent) => {
         console.debug("handleCommandSendSubmit")
@@ -15,6 +16,12 @@ export const CommunicationsForm = () => {
         if (!writer || !command) {
             return
         }
+
+        const log: LogItem = {
+            kind: "sent",
+            message: command.toString()
+        }
+        prependLogItem(setGlobalState, log)
         await writer.write(command.toString())
     }
 
