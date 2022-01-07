@@ -1,13 +1,15 @@
-import React, {FormEvent, useState} from 'react';
+import React, {FormEvent} from 'react';
 import './App.css';
 import {createSerialConnection, ReadHandler} from "../../services";
 import {Link, Route, Routes} from "react-router-dom";
 import {Communications, CommunicationsProps, Locos} from "../../pages";
 import {HandleSubmit} from "../../utils";
+import {useGlobalContext} from "../../contexts";
+import {CommunicationsState} from "../../types";
 
 export const App = () => {
-    const [writer, setWriter] = useState<WritableStreamDefaultWriter<string> | null>(null)
-    const [readLog, setReadLog] = useState<string[]>([])
+    const [globalState, setGlobalState] = useGlobalContext();
+    const {communications: {writer}} = globalState
 
     const handleCommandSendSubmit: HandleSubmit = async (event: FormEvent) => {
         console.debug("handleCommandSendSubmit")
@@ -21,31 +23,40 @@ export const App = () => {
         await writer.write(command.toString())
     }
 
-    const handleSubmit = async (event: FormEvent) => {
+    const handleConnectionRequestSubmit = async (event: FormEvent) => {
         event.preventDefault()
         const {target} = event
         const formData = new FormData(target as HTMLFormElement)
         const communicator = formData.get('communicator')
         if (communicator === "serial") {
             const {writer} = await createSerialConnection({readHandler: handleRead});
-            setWriter(writer)
+            setGlobalState((prevState) => {
+                const {communications: prevComms} = prevState
+                const communications: CommunicationsState = {...prevComms, writer}
+                return {...prevState, communications}
+            })
         }
     }
 
     const handleRead: ReadHandler = (value) => {
         console.debug("READ: ", value)
-        setReadLog(prevState => [value, ...prevState])
+        setGlobalState((prevState) => {
+            const {communications: prevComms} = prevState
+            const {logs: prevLogs} = prevComms
+            const logs = [value, ...prevLogs]
+            const communications: CommunicationsState = {...prevComms, logs}
+            return {...prevState, communications}
+        })
     }
 
     const communicationsProps: CommunicationsProps = {
         handleCommandSendSubmit,
-        readLog
     }
 
     return (
         <div>
             <h1>Cloud Throttle</h1>
-            <form action="/communications/connect" method="post" onSubmit={handleSubmit}>
+            <form action="/communications/connect" method="post" onSubmit={handleConnectionRequestSubmit}>
                 <select name="communicator" id="communicator">
                     <option value="serial">Serial</option>
                 </select>
