@@ -1,6 +1,5 @@
-import {GlobalState, Loco, Locos, LogItem, SetGlobalState} from "../../types";
-import {throttleCommand} from "@cloudthrottle/dcc-ex--commands";
-import {prependLogItem} from "../communications";
+import {GlobalState, Loco, Locos, SetGlobalState} from "../../types";
+import {writeThrottleCommand} from "./WriteThrottleCommand";
 
 export type SetSpeedAction = (loco: Loco, speed: number) => void;
 export type SetDirectionAction = (loco: Loco, direction: number) => void;
@@ -8,33 +7,6 @@ export type SetDirectionAction = (loco: Loco, direction: number) => void;
 export type ThrottleActions = {
     setSpeed: SetSpeedAction,
     setDirection: SetDirectionAction
-}
-
-interface WriteThrottleCommand {
-    context: {
-        globalContext: GlobalState;
-        setGlobalContext: SetGlobalState
-    }
-    loco: Loco;
-}
-
-function writeThrottleCommand({loco, context: {globalContext, setGlobalContext}}: WriteThrottleCommand) {
-    const {communications: {writer}} = globalContext
-    if (!writer) {
-        return;
-    }
-
-    const commandOptions = {
-        ...loco.throttle,
-        cab: 3
-    }
-    const command = throttleCommand(commandOptions)
-    const log: LogItem = {
-        kind: "sent",
-        message: command
-    }
-    prependLogItem(setGlobalContext, log)
-    void writer.write(command)
 }
 
 function setSpeedAction(globalContext: GlobalState, setGlobalContext: SetGlobalState): SetSpeedAction {
