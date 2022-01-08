@@ -15,7 +15,9 @@
     "node": ">=16.8.0",
     "npm": ">=8.1.0"
   },
+  "type": "module",
   "dependencies": {
+    "@cloudthrottle/dcc-ex--commands": "^0.5.1",
     "@cloudthrottle/dcc-ex--serial-communicator": "^0.1.0",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",

@@ -7,10 +7,10 @@ type ThrottleProps = {
     loco: Loco
 }
 export const Throttle = ({loco}: ThrottleProps) => {
-    const [, setGlobalState] = useGlobalContext();
     const {throttle: {speed, direction}} = loco
 
-    const {setSpeed, setDirection} = throttleActions(setGlobalState);
+    const [globalContext, setGlobalContext] = useGlobalContext()
+    const {setSpeed, setDirection} = throttleActions(globalContext, setGlobalContext);
 
     return (
         <div className="loco">
