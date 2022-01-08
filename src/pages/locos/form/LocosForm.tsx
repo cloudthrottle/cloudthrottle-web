@@ -1,6 +1,7 @@
 import {useGlobalContext} from "../../../contexts";
 import {HandleSubmit} from "../../../utils";
 import React, {FormEvent} from "react";
+import {createLoco} from "../../../utils/locos";
 
 export const LocosForm = () => {
     const [, setGlobalState] = useGlobalContext();
@@ -14,11 +15,7 @@ export const LocosForm = () => {
         if (!name) {
             return
         }
-        setGlobalState(prevState => {
-            const {locos: prevLocos} = prevState
-            const locos = [...prevLocos, name.toString()]
-            return {...prevState, locos}
-        })
+        createLoco(setGlobalState, name);
 
         // @ts-ignore
         target.reset()

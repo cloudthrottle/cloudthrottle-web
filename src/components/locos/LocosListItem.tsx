@@ -6,5 +6,5 @@ type LocosListItemProps = {
 }
 
 export const LocosListItem = ({loco}: LocosListItemProps) => {
-    return <li>{loco}</li>
+    return <li>{loco.name}</li>
 }

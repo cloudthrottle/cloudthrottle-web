@@ -1,11 +1,12 @@
 import React, {FormEvent} from 'react';
 import './App.css';
 import {Link, Route, Routes} from "react-router-dom";
-import {Communications, Locos} from "../../pages";
+import {Communications, Locos, Throttles} from "../../pages";
 import {HandleSubmit, prependLogItem} from "../../utils";
 import {useGlobalContext} from "../../contexts";
 import {CommunicationsState, LogItem} from "../../types";
 import {createSerialConnection, ReadHandler} from "@cloudthrottle/dcc-ex--serial-communicator";
+
 export const App = () => {
     const [, setGlobalState] = useGlobalContext();
 
@@ -46,11 +47,13 @@ export const App = () => {
             <nav>
                 <Link to="/locos">Locos</Link>
                 <Link to="/communications">Comms</Link>
+                <Link to="/throttles">Throttles</Link>
             </nav>
 
             <Routes>
                 <Route path="/communications/*" element={<Communications/>}/>
                 <Route path="/locos/*" element={<Locos/>}/>
+                <Route path="/throttles/*" element={<Throttles/>}/>
             </Routes>
         </div>
     )

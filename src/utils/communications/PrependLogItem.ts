@@ -1,7 +1,6 @@
-import {GlobalState} from "../../contexts";
-import {CommunicationsState, LogItem} from "../../types";
+import {CommunicationsState, LogItem, SetGlobalState} from "../../types";
 
-export function prependLogItem(setGlobalState: (value: (((prevState: GlobalState) => GlobalState) | GlobalState)) => void, log: LogItem) {
+export function prependLogItem(setGlobalState: SetGlobalState, log: LogItem) {
     setGlobalState((prevState) => {
         const {communications: prevComms} = prevState
         const {logs: prevLogs} = prevComms

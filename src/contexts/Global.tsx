@@ -1,10 +1,5 @@
 import React, {createContext, PropsWithChildren, useContext, useMemo, useState} from "react";
-import {CommunicationsState, LocosState} from "../types";
-
-export type GlobalState = {
-    communications: CommunicationsState,
-    locos: LocosState
-}
+import {GlobalState} from "../types";
 
 const initialState: GlobalState = {
     communications: {
