@@ -12,7 +12,7 @@ export const Throttle = ({loco}: ThrottleProps) => {
     const {throttle: {speed, direction}} = loco
 
     const [globalContext, setGlobalContext] = useGlobalContext()
-    const {setSpeed, setDirection, setFunctionValue} = throttleActions(globalContext, setGlobalContext);
+    const {setSpeed, setDirection, setFunctionValue, setEStop} = throttleActions(globalContext, setGlobalContext);
 
     const handleFunctionSubmit = (event: SyntheticEvent<HTMLFormElement, SubmitEvent>) => {
         event.preventDefault()
@@ -49,6 +49,13 @@ export const Throttle = ({loco}: ThrottleProps) => {
         setSpeed(loco, 0)
     };
 
+    const handleEStopSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        console.debug("handleEStopSubmit")
+        event.preventDefault()
+
+        setEStop(loco)
+    };
+
     const handleDirectionChange = (event: React.FormEvent<HTMLFormElement>) => {
         console.debug("handleDirectionChange")
         event.preventDefault()
@@ -72,6 +79,13 @@ export const Throttle = ({loco}: ThrottleProps) => {
             <div className="view">
                 <button disabled={true}>view</button>
             </div>
+
+            <form action={`/cabs/${loco.cabId}/e-stop`}
+                  method="post"
+                  className="e-stop"
+                  onSubmit={handleEStopSubmit}>
+                <button type="submit">E-Stop</button>
+            </form>
 
             <form action={`/cabs/${loco.cabId}/function`}
                   method="post"

@@ -3,6 +3,7 @@ import {writeCabCommand, writeThrottleCommand} from "./WriteThrottleCommand";
 import {BitValue} from "@cloudthrottle/dcc-ex--commands";
 
 export type SetSpeedAction = (loco: Loco, speed: number) => void;
+export type SetEStopAction = (loco: Loco) => void;
 export type SetDirectionAction = (loco: Loco, direction: number) => void;
 export type FunctionButtonActionParams = {
     name: number,
@@ -14,6 +15,7 @@ export type ThrottleActions = {
     setSpeed: SetSpeedAction,
     setDirection: SetDirectionAction
     setFunctionValue: SetFunctionAction
+    setEStop: SetEStopAction
 }
 
 function setSpeedAction(globalContext: GlobalState, setGlobalContext: SetGlobalState): SetSpeedAction {
@@ -27,6 +29,31 @@ function setSpeedAction(globalContext: GlobalState, setGlobalContext: SetGlobalS
 
             const {throttle: prevThrottle} = prevLoco
             const throttle = {...prevThrottle, speed}
+            const newLoco: Loco = {...prevLoco, throttle}
+            const locos: Locos = prevLocosState.map(prevLoco => prevLoco.name === newLoco.name ? newLoco : prevLoco)
+            writeThrottleCommand({
+                loco: newLoco,
+                context: {
+                    globalContext,
+                    setGlobalContext
+                }
+            });
+            return {...prevState, locos}
+        })
+    }
+}
+
+function setEStopAction(globalContext: GlobalState, setGlobalContext: SetGlobalState): SetEStopAction {
+    return (loco) => {
+        setGlobalContext((prevState) => {
+            const {locos: prevLocosState} = prevState
+            const prevLoco = prevLocosState.find(prevLoco => prevLoco.name === loco.name)
+            if (!prevLoco) {
+                return prevState
+            }
+
+            const {throttle: prevThrottle} = prevLoco
+            const throttle = {...prevThrottle, speed: -1}
             const newLoco: Loco = {...prevLoco, throttle}
             const locos: Locos = prevLocosState.map(prevLoco => prevLoco.name === newLoco.name ? newLoco : prevLoco)
 
@@ -98,6 +125,7 @@ export const throttleActions = (globalContext: GlobalState, setGlobalContext: an
     return {
         setSpeed: setSpeedAction(globalContext, setGlobalContext),
         setDirection: setDirectionAction(globalContext, setGlobalContext),
-        setFunctionValue: setFunctionAction(globalContext, setGlobalContext)
+        setFunctionValue: setFunctionAction(globalContext, setGlobalContext),
+        setEStop: setEStopAction(globalContext, setGlobalContext)
     };
 };
