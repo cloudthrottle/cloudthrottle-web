@@ -12,10 +12,15 @@ export const LocosForm = () => {
         const {target} = event
         const formData = new FormData(target as HTMLFormElement)
         const name = formData.get('name')
-        if (!name) {
+        const cabId = formData.get("cabId")
+        if (!name || !cabId) {
             return
         }
-        createLoco(setGlobalState, name);
+
+        createLoco(setGlobalState, {
+            name: name.toString(),
+            cabId: parseInt(cabId.toString())
+        });
 
         // @ts-ignore
         target.reset()
@@ -27,6 +32,10 @@ export const LocosForm = () => {
             <form action="locos/new" method="post" onSubmit={handleNewLocoSubmit}>
                 <label htmlFor="name">Name</label>
                 <input type="text" id="name" name="name"/>
+
+                <label htmlFor="cabId">Cab ID</label>
+                <input type="number" id="cabId" name="cabId"/>
+
                 <button type="submit">Save</button>
             </form>
         </div>

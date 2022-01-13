@@ -69,6 +69,13 @@ button, select, input {
     grid-template-columns: subgrid;
 }
 
+@supports not (display: subgrid) {
+    .functions {
+        grid-template-columns: repeat(5, 1fr);
+        grid-gap: 0.3em;
+    }
+}
+
 .more {
     grid-column-end: -1;
 }
