@@ -42,6 +42,13 @@ export const Throttle = ({loco}: ThrottleProps) => {
         setSpeed(loco, parseInt(speed as string))
     }, 200);
 
+    const handleStopSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        console.debug("handleStopSubmit")
+        event.preventDefault()
+
+        setSpeed(loco, 0)
+    };
+
     const handleDirectionChange = (event: React.FormEvent<HTMLFormElement>) => {
         console.debug("handleDirectionChange")
         event.preventDefault()
@@ -89,6 +96,13 @@ export const Throttle = ({loco}: ThrottleProps) => {
                        min={0}
                        max={126}
                 />
+            </form>
+
+            <form action={`/cabs/${loco.cabId}/stop`}
+                  method="post"
+                  className="stop"
+                  onSubmit={handleStopSubmit}>
+                <button type="submit">Stop</button>
             </form>
 
             <form action={`/cabs/${loco.cabId}/direction`}

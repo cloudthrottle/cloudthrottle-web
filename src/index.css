@@ -69,6 +69,10 @@ button, select, input {
     grid-template-columns: subgrid;
 }
 
+.loco button, .loco input {
+    margin: 0;
+}
+
 @supports not (display: subgrid) {
     .functions {
         grid-template-columns: repeat(5, 1fr);
