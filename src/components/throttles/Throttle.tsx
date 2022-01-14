@@ -69,7 +69,7 @@ export const Throttle = ({loco}: ThrottleProps) => {
         setDirection(loco, parseInt(direction as string))
     };
 
-    const buttons = loco.functionButtons.slice(0, 4)
+    const buttons = loco.functionButtons?.slice(0, 4) || []
     return (
         <div className="loco">
             <div className="name">

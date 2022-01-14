@@ -37,7 +37,7 @@ function performSetSpeed({setGlobalContext, loco, speed, globalContext}: Perform
 
         const {throttle: prevThrottle} = prevLoco
         const throttle = {...prevThrottle, speed}
-        const newLoco: Loco = {...prevLoco, throttle, updatedAt: Date.now()}
+        const newLoco: Loco = {...prevLoco, throttle}
         const locos: Locos = prevLocosState.map(prevLoco => prevLoco.name === newLoco.name ? newLoco : prevLoco)
         writeThrottleCommand({
             loco: newLoco,

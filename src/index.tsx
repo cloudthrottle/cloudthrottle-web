@@ -4,15 +4,19 @@ import './index.css';
 import {App} from "./components";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {GlobalProvider} from "./contexts";
+import {store} from "./contexts/store";
+import {Provider} from "react-redux";
 
 const rootElement = document.getElementById('root')
 ReactDOM.render(
-    <GlobalProvider>
-        <BrowserRouter>
-            <Routes>
-                <Route path="/*" element={<App/>}/>
-            </Routes>
-        </BrowserRouter>
-    </GlobalProvider>,
-    rootElement
+  <GlobalProvider>
+    <Provider store={store}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/*" element={<App/>}/>
+        </Routes>
+      </BrowserRouter>
+    </Provider>
+  </GlobalProvider>,
+  rootElement
 );
