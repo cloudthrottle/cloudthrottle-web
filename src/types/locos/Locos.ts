@@ -6,7 +6,7 @@ export type Loco = {
     name: string,
     cabId: number
     throttle: ThrottleState
-    functionButtons?: FunctionButtonsState
+    functionButtons: FunctionButtonsState
 }
 
 export type Locos = Loco[]

@@ -1,7 +1,14 @@
 import {createSlice, Draft, PayloadAction} from '@reduxjs/toolkit'
-import {Loco, Locos, LocosState} from "../../types";
+import {FunctionButtonsState, Loco, Locos, LocosState} from "../../types";
 import {CreateLocoParams} from "../../utils/locos";
 
+const defaultFunctionButtonsState: FunctionButtonsState = Array.from(Array(30)).map((value, index) => {
+  return {
+    name: index,
+    value,
+    display: `F${index}`
+  }
+})
 
 const initialState: LocosState = []
 
@@ -20,7 +27,8 @@ export const locosSlice = createSlice({
           throttle: {
             speed: 0,
             direction: 1
-          }
+          },
+          functionButtons: defaultFunctionButtonsState
         }
         return {payload: loco}
       }

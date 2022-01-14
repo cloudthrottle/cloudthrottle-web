@@ -1,11 +1,9 @@
-import {addLoco, useGlobalContext} from "../../../contexts";
+import {addLoco} from "../../../contexts";
 import {HandleSubmit} from "../../../utils";
 import React, {FormEvent} from "react";
-import {createLoco} from "../../../utils/locos";
 import {useDispatch} from "react-redux";
 
 export const LocosForm = () => {
-    const [, setGlobalState] = useGlobalContext();
     const dispatch = useDispatch()
 
     const handleNewLocoSubmit: HandleSubmit = async (event: FormEvent) => {
@@ -18,11 +16,6 @@ export const LocosForm = () => {
         if (!name || !cabId) {
             return
         }
-
-        createLoco(setGlobalState, {
-            name: name.toString(),
-            cabId: parseInt(cabId.toString())
-        });
 
         dispatch(addLoco({
             name: name.toString(),
