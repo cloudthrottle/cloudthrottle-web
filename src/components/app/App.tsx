@@ -3,13 +3,12 @@ import './App.css';
 import {Link, Route, Routes} from "react-router-dom";
 import {Communications, Locos, Throttles} from "../../pages";
 import {HandleSubmit, prependLogItem} from "../../utils";
-import {addLoco, addLog, useGlobalContext} from "../../contexts";
+import {addLoco, addLog, setWriter, useGlobalContext} from "../../contexts";
 import {CommunicationsState, LogItem} from "../../types";
 import {createSerialConnection, ReadHandler} from "@cloudthrottle/dcc-ex--serial-communicator";
 import {useDispatch} from "react-redux";
 
 export const App = () => {
-    const [, setGlobalState] = useGlobalContext();
     const dispatch = useDispatch()
 
     const handleConnectionRequestSubmit = async (event: FormEvent) => {
@@ -19,11 +18,7 @@ export const App = () => {
         const communicator = formData.get('communicator')
         if (communicator === "serial") {
             const {writer} = await createSerialConnection({readHandler: handleRead});
-            setGlobalState((prevState) => {
-                const {communications: prevComms} = prevState
-                const communications: CommunicationsState = {...prevComms, writer}
-                return {...prevState, communications}
-            })
+            dispatch(setWriter(writer))
         }
     }
 

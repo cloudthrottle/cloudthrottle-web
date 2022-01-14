@@ -14,11 +14,14 @@ export const communicationsSlice = createSlice({
   reducers: {
     addLog: (state: Draft<CommunicationsState>, action: PayloadAction<LogItem>) => {
       state.logs = [action.payload, ...state.logs]
+    },
+    setWriter: (state, action) => {
+      state.writer = action.payload
     }
   },
 })
 
 // Action creators are generated for each case reducer function
-export const {addLog} = communicationsSlice.actions
+export const {addLog, setWriter} = communicationsSlice.actions
 
 export default communicationsSlice.reducer

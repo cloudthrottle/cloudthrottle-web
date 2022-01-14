@@ -1,31 +1,33 @@
 import React, {FormEvent} from 'react'
 import {SendCommsForm} from "../../../components";
 import {HandleSubmit, prependLogItem} from "../../../utils";
-import {addLog, useGlobalContext} from "../../../contexts";
+import {addLog, RootState, useGlobalContext} from "../../../contexts";
 import {LogItem} from "../../../types";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 
 export const CommunicationsForm = () => {
-    const [{communications: {writer}}] = useGlobalContext();
+    const writer = useSelector((state: RootState) => {
+      return state.communications.writer;
+    })
     const dispatch = useDispatch()
 
     const handleCommandSendSubmit: HandleSubmit = async (event: FormEvent) => {
-        console.debug("handleCommandSendSubmit")
-        event.preventDefault()
-        const {target} = event
-        const formData = new FormData(target as HTMLFormElement)
-        const command = formData.get('command')
-        if (!writer || !command) {
-            return
-        }
+      console.debug("handleCommandSendSubmit")
+      event.preventDefault()
+      const {target} = event
+      const formData = new FormData(target as HTMLFormElement)
+      const command = formData.get('command')
+      if (!writer || !command) {
+        return
+      }
 
-        const log: LogItem = {
-            kind: "sent",
-            message: command.toString()
-        }
+      const log: LogItem = {
+        kind: "sent",
+        message: command.toString()
+      }
 
-        dispatch(addLog(log))
-        await writer.write(command.toString())
+      dispatch(addLog(log))
+      await writer.write(command.toString())
     }
 
     return <SendCommsForm handleCommandSendSubmit={handleCommandSendSubmit}/>
