@@ -1,8 +1,6 @@
 import React from "react";
 import {LocosListItem} from "./LocosListItem";
 import {Locos} from "../../types";
-import {addLoco, setSpeed} from "../../contexts";
-import {useDispatch} from "react-redux";
 
 type LocosListProps = {
     locos: Locos

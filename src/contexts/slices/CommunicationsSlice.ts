@@ -1,6 +1,5 @@
 import {createSlice, Draft, PayloadAction} from '@reduxjs/toolkit'
-import {CommunicationsState, Loco, Locos, LocosState, LogItem} from "../../types";
-import {CreateLocoParams} from "../../utils/locos";
+import {CommunicationsState, LogItem} from "../../types";
 
 
 const initialState: CommunicationsState = {

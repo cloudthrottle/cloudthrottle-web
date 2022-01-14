@@ -1,18 +1,15 @@
 import {Loco} from "../../types";
-import {useGlobalContext} from "../../contexts";
-import {throttleActions} from "../../utils";
+import {setDirection, setEStop, setSpeed, setStop} from "../../contexts";
 import React, {SyntheticEvent, useState} from "react";
 import {Direction} from "@cloudthrottle/dcc-ex--commands";
-import {debounce} from "lodash"
+import {useDispatch} from "react-redux";
 
 type ThrottleProps = {
     loco: Loco
 }
 export const Throttle = ({loco}: ThrottleProps) => {
     const {throttle: {speed, direction}} = loco
-
-    const [globalContext, setGlobalContext] = useGlobalContext()
-    const {setSpeed, setDirection, setFunctionValue, setEStop} = throttleActions(globalContext, setGlobalContext);
+    const dispatch = useDispatch()
 
     const handleFunctionSubmit = (event: SyntheticEvent<HTMLFormElement, SubmitEvent>) => {
         event.preventDefault()
@@ -29,44 +26,47 @@ export const Throttle = ({loco}: ThrottleProps) => {
         // })
     };
 
-    const handleSpeedChange = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSpeedChange = (event: React.FormEvent<HTMLInputElement>) => {
         console.debug("handleSpeedChange")
         event.preventDefault()
+
         const {target} = event
         const formData = target as HTMLInputElement
-        const speed = formData.value
+        const speed = formData.valueAsNumber
         if (!speed) {
             return
         }
 
-        setSpeed(loco, parseInt(speed as string))
+        dispatch(setSpeed({loco, speed}))
     };
 
     const handleStopSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         console.debug("handleStopSubmit")
         event.preventDefault()
 
-        setSpeed(loco, 0)
+        dispatch(setStop({loco}))
     };
 
     const handleEStopSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         console.debug("handleEStopSubmit")
         event.preventDefault()
 
-        setEStop(loco)
+        dispatch(setEStop({loco}))
     };
 
     const handleDirectionChange = (event: React.FormEvent<HTMLFormElement>) => {
         console.debug("handleDirectionChange")
         event.preventDefault()
+
         const {target} = event
         const formData = target as HTMLInputElement
-        const direction = formData.value
-        if (!direction) {
+        const directionValue = formData.value
+        if (!directionValue) {
             return
         }
+        const direction = parseInt(directionValue)
 
-        setDirection(loco, parseInt(direction as string))
+        dispatch(setDirection({loco, direction}))
     };
 
     const buttons = loco.functionButtons?.slice(0, 4) || []
@@ -102,13 +102,13 @@ export const Throttle = ({loco}: ThrottleProps) => {
 
             <form action={`/cabs/${loco.cabId}/speed`}
                   method="post"
-                  className="speed"
-                  onChange={handleSpeedChange}>
+                  className="speed">
                 <input type="range"
                        name="speed"
-                       defaultValue={speed}
+                       value={speed}
                        min={0}
                        max={126}
+                       onChange={handleSpeedChange}
                 />
             </form>
 

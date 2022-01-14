@@ -1,5 +1,5 @@
 import {createSlice, Draft, PayloadAction} from '@reduxjs/toolkit'
-import {FunctionButtonsState, Loco, Locos, LocosState} from "../../types";
+import {FunctionButtonsState, Loco, LocosState} from "../../types";
 import {CreateLocoParams} from "../../utils/locos";
 
 const defaultFunctionButtonsState: FunctionButtonsState = Array.from(Array(30)).map((value, index) => {

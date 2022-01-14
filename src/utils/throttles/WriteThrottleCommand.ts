@@ -20,9 +20,9 @@ interface WriteCabCommand extends WriteThrottleCommand {
 
 export function writeThrottleCommand({loco, context: {globalContext, setGlobalContext}}: WriteThrottleCommand) {
     const {communications: {writer}} = globalContext
-    // if (!writer) {
-    //     return;
-    // }
+    if (!writer) {
+        return;
+    }
 
     const commandOptions = {
         ...loco.throttle,
@@ -34,14 +34,14 @@ export function writeThrottleCommand({loco, context: {globalContext, setGlobalCo
         message: command
     }
     prependLogItem(setGlobalContext, log)
-    // void writer.write(command)
+    void writer.write(command)
 }
 
 export function writeCabCommand({loco, context: {globalContext, setGlobalContext}, functionName, functionValue}: WriteCabCommand) {
     const {communications: {writer}} = globalContext
-    // if (!writer) {
-    //     return;
-    // }
+    if (!writer) {
+        return;
+    }
 
     const commandOptions = {
         cab: loco.cabId,
@@ -54,5 +54,5 @@ export function writeCabCommand({loco, context: {globalContext, setGlobalContext
         message: command
     }
     prependLogItem(setGlobalContext, log)
-    // void writer.write(command)
+    void writer.write(command)
 }

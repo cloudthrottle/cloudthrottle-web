@@ -1,7 +1,7 @@
 import React, {FormEvent} from 'react'
 import {SendCommsForm} from "../../../components";
-import {HandleSubmit, prependLogItem} from "../../../utils";
-import {addLog, RootState, useGlobalContext} from "../../../contexts";
+import {HandleSubmit} from "../../../utils";
+import {addLog, RootState} from "../../../contexts";
 import {LogItem} from "../../../types";
 import {useDispatch, useSelector} from "react-redux";
 

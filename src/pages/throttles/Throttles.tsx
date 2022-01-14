@@ -1,9 +1,13 @@
 import React from "react"
-import {useGlobalContext} from "../../contexts";
+import {RootState} from "../../contexts";
 import {Throttle} from "../../components";
+import {useSelector} from "react-redux";
 
 export const Throttles = () => {
-    const [{locos}] = useGlobalContext();
+    const locos = useSelector((state: RootState) => {
+      console.log(state);
+      return state.locos;
+    })
 
     return (
         <div>
