@@ -3,7 +3,7 @@ import './App.css';
 import {Link, Route, Routes} from "react-router-dom";
 import {Communications, Locos, Throttles} from "../../pages";
 import {HandleSubmit} from "../../utils";
-import {addLog, setWriter} from "../../contexts";
+import {addLog, setWriter} from "../../states";
 import {LogItem} from "../../types";
 import {createSerialConnection, ReadHandler} from "@cloudthrottle/dcc-ex--serial-communicator";
 import {useDispatch} from "react-redux";

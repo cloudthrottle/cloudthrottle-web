@@ -1,5 +1,5 @@
 import {Loco} from "../../types";
-import {setDirection, setEStop, setSpeed, setStop} from "../../contexts";
+import {setDirection, setEStop, setSpeed, setStop} from "../../states";
 import React, {SyntheticEvent, useState} from "react";
 import {Direction} from "@cloudthrottle/dcc-ex--commands";
 import {useDispatch} from "react-redux";

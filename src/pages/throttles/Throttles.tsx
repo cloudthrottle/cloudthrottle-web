@@ -1,5 +1,5 @@
 import React from "react"
-import {RootState} from "../../contexts";
+import {RootState} from "../../states";
 import {Throttle} from "../../components";
 import {useSelector} from "react-redux";
 

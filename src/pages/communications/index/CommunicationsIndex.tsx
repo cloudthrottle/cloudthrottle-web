@@ -1,6 +1,6 @@
 import React from 'react'
 import {CommunicationsLogsList} from "../../../components";
-import {RootState} from "../../../contexts";
+import {RootState} from "../../../states";
 import {useSelector} from "react-redux";
 
 export const CommunicationsIndex = () => {

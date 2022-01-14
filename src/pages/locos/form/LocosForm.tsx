@@ -1,4 +1,4 @@
-import {addLoco} from "../../../contexts";
+import {addLoco} from "../../../states";
 import {HandleSubmit} from "../../../utils";
 import React, {FormEvent} from "react";
 import {useDispatch} from "react-redux";

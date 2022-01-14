@@ -1,4 +1,4 @@
-import {RootState} from "../../../contexts";
+import {RootState} from "../../../states";
 import React from "react";
 import {LocosList} from "../../../components/locos";
 import {useSelector} from "react-redux";
