@@ -1,8 +1,12 @@
 import React from 'react'
 import {CommunicationsLogsList} from "../../../components";
-import {useGlobalContext} from "../../../contexts";
+import {RootState, useGlobalContext} from "../../../contexts";
+import {useSelector} from "react-redux";
 
 export const CommunicationsIndex = () => {
-    const [{communications: {logs}}] = useGlobalContext();
+    const {logs} = useSelector((state: RootState) => {
+        console.log(state);
+        return state.communications;
+    })
     return <CommunicationsLogsList logs={logs}/>
 }

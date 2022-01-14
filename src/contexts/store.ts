@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
 import locosReducer from "./slices/LocosSlice";
+import communicationsReducer from "./slices/CommunicationsSlice";
 
 export const store = configureStore({
   reducer: {
-    locos: locosReducer
+    locos: locosReducer,
+    communications: communicationsReducer
   },
 })
 

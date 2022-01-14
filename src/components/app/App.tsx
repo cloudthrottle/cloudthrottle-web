@@ -3,12 +3,14 @@ import './App.css';
 import {Link, Route, Routes} from "react-router-dom";
 import {Communications, Locos, Throttles} from "../../pages";
 import {HandleSubmit, prependLogItem} from "../../utils";
-import {useGlobalContext} from "../../contexts";
+import {addLoco, addLog, useGlobalContext} from "../../contexts";
 import {CommunicationsState, LogItem} from "../../types";
 import {createSerialConnection, ReadHandler} from "@cloudthrottle/dcc-ex--serial-communicator";
+import {useDispatch} from "react-redux";
 
 export const App = () => {
     const [, setGlobalState] = useGlobalContext();
+    const dispatch = useDispatch()
 
     const handleConnectionRequestSubmit = async (event: FormEvent) => {
         event.preventDefault()
@@ -31,7 +33,7 @@ export const App = () => {
             message: value,
             kind: "received"
         }
-        prependLogItem(setGlobalState, log);
+        dispatch(addLog(log))
     }
 
     return (

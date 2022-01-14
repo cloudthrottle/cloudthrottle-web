@@ -1,11 +1,13 @@
 import React, {FormEvent} from 'react'
 import {SendCommsForm} from "../../../components";
 import {HandleSubmit, prependLogItem} from "../../../utils";
-import {useGlobalContext} from "../../../contexts";
+import {addLog, useGlobalContext} from "../../../contexts";
 import {LogItem} from "../../../types";
+import {useDispatch} from "react-redux";
 
 export const CommunicationsForm = () => {
-    const [{communications: {writer}}, setGlobalState] = useGlobalContext();
+    const [{communications: {writer}}] = useGlobalContext();
+    const dispatch = useDispatch()
 
     const handleCommandSendSubmit: HandleSubmit = async (event: FormEvent) => {
         console.debug("handleCommandSendSubmit")
@@ -21,7 +23,8 @@ export const CommunicationsForm = () => {
             kind: "sent",
             message: command.toString()
         }
-        prependLogItem(setGlobalState, log)
+
+        dispatch(addLog(log))
         await writer.write(command.toString())
     }
 
