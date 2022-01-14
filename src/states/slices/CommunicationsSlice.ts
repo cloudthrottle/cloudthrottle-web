@@ -16,11 +16,23 @@ export const communicationsSlice = createSlice({
     },
     setWriter: (state, action) => {
       state.writer = action.payload
+    },
+    sendLog: (state, {payload: message}: PayloadAction<string>) => {
+      if (!state.writer) {
+        return
+      }
+
+      const logItem: LogItem = {
+        kind: "sent",
+        message
+      }
+      state.logs = [logItem, ...state.logs]
+      void state.writer.write(message)
     }
-  },
+  }
 })
 
 // Action creators are generated for each case reducer function
-export const {addLog, setWriter} = communicationsSlice.actions
+export const {addLog, setWriter, sendLog} = communicationsSlice.actions
 
 export default communicationsSlice.reducer
