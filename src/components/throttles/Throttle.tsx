@@ -29,7 +29,7 @@ export const Throttle = ({loco}: ThrottleProps) => {
         // })
     };
 
-    const handleSpeedChange = debounce((event: React.FormEvent<HTMLFormElement>) => {
+    const handleSpeedChange = (event: React.FormEvent<HTMLFormElement>) => {
         console.debug("handleSpeedChange")
         event.preventDefault()
         const {target} = event
@@ -40,7 +40,7 @@ export const Throttle = ({loco}: ThrottleProps) => {
         }
 
         setSpeed(loco, parseInt(speed as string))
-    }, 200);
+    };
 
     const handleStopSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         console.debug("handleStopSubmit")

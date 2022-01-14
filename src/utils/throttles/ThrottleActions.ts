@@ -4,6 +4,7 @@ import {BitValue} from "@cloudthrottle/dcc-ex--commands";
 
 export type SetSpeedAction = (loco: Loco, speed: number) => void;
 export type SetEStopAction = (loco: Loco) => void;
+export type SetStopAction = (loco: Loco) => void;
 export type SetDirectionAction = (loco: Loco, direction: number) => void;
 export type FunctionButtonActionParams = {
     name: number,
@@ -16,56 +17,56 @@ export type ThrottleActions = {
     setDirection: SetDirectionAction
     setFunctionValue: SetFunctionAction
     setEStop: SetEStopAction
+    setStop: SetStopAction
+}
+
+type PerformSetSpeedParams = {
+    setGlobalContext: SetGlobalState;
+    globalContext: GlobalState;
+    loco: Loco;
+    speed: number;
+}
+
+function performSetSpeed({setGlobalContext, loco, speed, globalContext}: PerformSetSpeedParams) {
+    setGlobalContext((prevState) => {
+        const {locos: prevLocosState} = prevState
+        const prevLoco = prevLocosState.find(prevLoco => prevLoco.name === loco.name)
+        if (!prevLoco) {
+            return prevState
+        }
+
+        const {throttle: prevThrottle} = prevLoco
+        const throttle = {...prevThrottle, speed}
+        const newLoco: Loco = {...prevLoco, throttle, updatedAt: Date.now()}
+        const locos: Locos = prevLocosState.map(prevLoco => prevLoco.name === newLoco.name ? newLoco : prevLoco)
+        writeThrottleCommand({
+            loco: newLoco,
+            context: {
+                globalContext,
+                setGlobalContext
+            }
+        });
+        const state = {...prevState, locos}
+        console.log(state);
+        return state
+    })
 }
 
 function setSpeedAction(globalContext: GlobalState, setGlobalContext: SetGlobalState): SetSpeedAction {
     return (loco, speed) => {
-        setGlobalContext((prevState) => {
-            const {locos: prevLocosState} = prevState
-            const prevLoco = prevLocosState.find(prevLoco => prevLoco.name === loco.name)
-            if (!prevLoco) {
-                return prevState
-            }
-
-            const {throttle: prevThrottle} = prevLoco
-            const throttle = {...prevThrottle, speed}
-            const newLoco: Loco = {...prevLoco, throttle}
-            const locos: Locos = prevLocosState.map(prevLoco => prevLoco.name === newLoco.name ? newLoco : prevLoco)
-            writeThrottleCommand({
-                loco: newLoco,
-                context: {
-                    globalContext,
-                    setGlobalContext
-                }
-            });
-            return {...prevState, locos}
-        })
+        performSetSpeed({setGlobalContext, loco, speed, globalContext});
     }
 }
 
 function setEStopAction(globalContext: GlobalState, setGlobalContext: SetGlobalState): SetEStopAction {
     return (loco) => {
-        setGlobalContext((prevState) => {
-            const {locos: prevLocosState} = prevState
-            const prevLoco = prevLocosState.find(prevLoco => prevLoco.name === loco.name)
-            if (!prevLoco) {
-                return prevState
-            }
+        performSetSpeed({setGlobalContext, loco, speed: -1, globalContext});
+    }
+}
 
-            const {throttle: prevThrottle} = prevLoco
-            const throttle = {...prevThrottle, speed: -1}
-            const newLoco: Loco = {...prevLoco, throttle}
-            const locos: Locos = prevLocosState.map(prevLoco => prevLoco.name === newLoco.name ? newLoco : prevLoco)
-
-            writeThrottleCommand({
-                loco: newLoco,
-                context: {
-                    globalContext,
-                    setGlobalContext
-                }
-            });
-            return {...prevState, locos}
-        })
+function setStopAction(globalContext: GlobalState, setGlobalContext: SetGlobalState): SetStopAction {
+    return (loco) => {
+        performSetSpeed({setGlobalContext, loco, speed: 0, globalContext});
     }
 }
 
@@ -126,6 +127,7 @@ export const throttleActions = (globalContext: GlobalState, setGlobalContext: an
         setSpeed: setSpeedAction(globalContext, setGlobalContext),
         setDirection: setDirectionAction(globalContext, setGlobalContext),
         setFunctionValue: setFunctionAction(globalContext, setGlobalContext),
-        setEStop: setEStopAction(globalContext, setGlobalContext)
+        setEStop: setEStopAction(globalContext, setGlobalContext),
+        setStop: setStopAction(globalContext, setGlobalContext)
     };
 };
