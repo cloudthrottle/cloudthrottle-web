@@ -69,6 +69,10 @@ button, select, input {
     grid-template-columns: subgrid;
 }
 
+.functions button:enabled[value="1"] {
+    opacity: 0.8;
+}
+
 .loco button, .loco input {
     margin: 0;
 }

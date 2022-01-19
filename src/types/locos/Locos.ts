@@ -21,4 +21,9 @@ export type FunctionButtonState = {
     value: BitValue
     display: string
 }
-export type FunctionButtonsState = FunctionButtonState[]
+export type FunctionButtonsState = {
+    [name: string]: {
+        value: BitValue,
+        display: string
+    }
+}

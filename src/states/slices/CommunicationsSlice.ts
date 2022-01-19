@@ -18,16 +18,16 @@ export const communicationsSlice = createSlice({
       state.writer = action.payload
     },
     sendLog: (state, {payload: message}: PayloadAction<string>) => {
-      if (!state.writer) {
-        return
-      }
+      // if (!state.writer) {
+      //   return
+      // }
 
       const logItem: LogItem = {
         kind: "sent",
         message
       }
       state.logs = [logItem, ...state.logs]
-      void state.writer.write(message)
+      // void state.writer.write(message)
     }
   }
 })

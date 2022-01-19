@@ -1,14 +1,17 @@
 import {createSlice, Draft, PayloadAction} from '@reduxjs/toolkit'
 import {FunctionButtonsState, Loco, LocosState} from "../../types";
 import {CreateLocoParams} from "../../utils/locos";
+import {BitValue} from "@cloudthrottle/dcc-ex--commands";
 
-const defaultFunctionButtonsState: FunctionButtonsState = Array.from(Array(30)).map((value, index) => {
-  return {
-    name: index,
-    value,
-    display: `F${index}`
-  }
-})
+const defaultFunctionButtonsState: FunctionButtonsState = Array.from(Array(30))
+  .reduce((previousValue, currentValue, currentIndex) => {
+    previousValue[currentIndex.toString()] = {
+      value: 0,
+      display: `F${currentIndex}`
+    }
+    return previousValue
+  }, {})
+
 
 const initialState: LocosState = []
 
@@ -52,11 +55,15 @@ export const locosSlice = createSlice({
       const locoIndex = state.findIndex((loco) => loco.name === name)
       state[locoIndex].throttle.speed = 0
       //  TODO: I want to call the `sendLog()` action in the `CommandsSlice` from here
+    },
+    setButtonValue: (state, {payload: {loco: {name}, name: fnName, value}}: PayloadAction<{loco: Loco, name: number, value: BitValue}>) => {
+      const locoIndex = state.findIndex((loco) => loco.name === name)
+      state[locoIndex].functionButtons[fnName].value = value
     }
   },
 })
 
 // Action creators are generated for each case reducer function
-export const {addLoco, setSpeed, setDirection, setEStop, setStop} = locosSlice.actions
+export const {addLoco, setSpeed, setDirection, setEStop, setStop, setButtonValue} = locosSlice.actions
 
 export default locosSlice.reducer

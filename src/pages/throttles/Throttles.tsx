@@ -5,7 +5,6 @@ import {useSelector} from "react-redux";
 
 export const Throttles = () => {
     const locos = useSelector((state: RootState) => {
-      console.log(state);
       return state.locos;
     })
 
@@ -16,7 +15,6 @@ export const Throttles = () => {
             <div className="container">
                 {locos.map((loco, index) => <Throttle key={index} loco={loco}/>)}
             </div>
-
         </div>
     )
 }
