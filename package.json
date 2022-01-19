@@ -17,8 +17,9 @@
   },
   "type": "module",
   "dependencies": {
-    "@cloudthrottle/dcc-ex--commands": "^0.5.3",
+    "@cloudthrottle/dcc-ex--commands": "^0.8.0",
     "@cloudthrottle/dcc-ex--serial-communicator": "^0.1.0",
+    "@reduxjs/toolkit": "^1.7.1",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
@@ -26,8 +27,10 @@
     "@types/node": "^16.11.18",
     "@types/react": "^17.0.38",
     "@types/react-dom": "^17.0.11",
+    "lodash": "^4.17.21",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-redux": "^7.2.6",
     "react-router-dom": "^6.2.1",
     "react-scripts": "5.0.0",
     "simpledotcss": "^1.0.5",
@@ -59,6 +62,7 @@
     ]
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.178",
     "@types/w3c-web-serial": "^1.0.2"
   }
 }

@@ -69,6 +69,21 @@ button, select, input {
     grid-template-columns: subgrid;
 }
 
+.functions button:enabled[value="1"] {
+    opacity: 0.8;
+}
+
+.loco button, .loco input {
+    margin: 0;
+}
+
+@supports not (display: subgrid) {
+    .functions {
+        grid-template-columns: repeat(5, 1fr);
+        grid-gap: 0.3em;
+    }
+}
+
 .more {
     grid-column-end: -1;
 }
