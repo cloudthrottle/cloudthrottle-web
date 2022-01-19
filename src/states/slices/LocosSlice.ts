@@ -38,22 +38,18 @@ export const locosSlice = createSlice({
     setSpeed: (state, {payload: {loco: {name}, speed}}: PayloadAction<{ loco: Loco, speed: number }>) => {
       const locoIndex = state.findIndex((loco) => loco.name === name)
       state[locoIndex].throttle.speed = speed
-      //  TODO: I want to call the `sendLog()` action in the `CommandsSlice` from here
     },
     setDirection: (state, {payload: {loco: {name}, direction}}: PayloadAction<{ loco: Loco, direction: number }>) => {
       const locoIndex = state.findIndex((loco) => loco.name === name)
       state[locoIndex].throttle.direction = direction
-      //  TODO: I want to call the `sendLog()` action in the `CommandsSlice` from here
     },
     setEStop: (state, {payload: {loco: {name}}}: PayloadAction<{ loco: Loco }>) => {
       const locoIndex = state.findIndex((loco) => loco.name === name)
       state[locoIndex].throttle.speed = -1
-      //  TODO: I want to call the `sendLog()` action in the `CommandsSlice` from here
     },
     setStop: (state, {payload: {loco: {name}}}: PayloadAction<{ loco: Loco }>) => {
       const locoIndex = state.findIndex((loco) => loco.name === name)
       state[locoIndex].throttle.speed = 0
-      //  TODO: I want to call the `sendLog()` action in the `CommandsSlice` from here
     },
     setButtonValue: (state, {payload: {loco: {name}, name: fnName, value}}: PayloadAction<{loco: Loco, name: number, value: BitValue}>) => {
       const locoIndex = state.findIndex((loco) => loco.name === name)
