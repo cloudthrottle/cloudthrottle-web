@@ -4,9 +4,7 @@ import {Throttle} from "../../components";
 import {useSelector} from "react-redux";
 
 export const Throttles = () => {
-    const locos = useSelector((state: RootState) => {
-      return state.locos;
-    })
+    const locos = useSelector((state: RootState) => state.locos)
 
     return (
         <div>

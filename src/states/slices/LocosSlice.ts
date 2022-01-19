@@ -1,6 +1,5 @@
 import {createSlice, Draft, PayloadAction} from '@reduxjs/toolkit'
-import {FunctionButtonsState, Loco, LocosState} from "../../types";
-import {CreateLocoParams} from "../../utils/locos";
+import {CreateLocoParams, FunctionButtonsState, Loco, LocosState} from "../../types";
 import {BitValue} from "@cloudthrottle/dcc-ex--commands";
 
 const defaultFunctionButtonsState: FunctionButtonsState = Array.from(Array(30))

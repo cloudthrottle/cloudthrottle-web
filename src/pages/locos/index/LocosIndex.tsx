@@ -4,10 +4,7 @@ import {LocosList} from "../../../components/locos";
 import {useSelector} from "react-redux";
 
 export const LocosIndex = () => {
-  const locos = useSelector((state: RootState) => {
-    console.log(state);
-    return state.locos;
-  })
+  const locos = useSelector((state: RootState) => state.locos)
 
   return <LocosList locos={locos}/>
 }

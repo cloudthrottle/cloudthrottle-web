@@ -2,9 +2,8 @@ import React, {FormEvent} from 'react';
 import './App.css';
 import {Link, Route, Routes} from "react-router-dom";
 import {Communications, Locos, Throttles} from "../../pages";
-import {HandleSubmit} from "../../utils";
 import {addLog, setWriter} from "../../states";
-import {LogItem} from "../../types";
+import {HandleSubmit, LogItem} from "../../types";
 import {createSerialConnection, ReadHandler} from "@cloudthrottle/dcc-ex--serial-communicator";
 import {useDispatch} from "react-redux";
 

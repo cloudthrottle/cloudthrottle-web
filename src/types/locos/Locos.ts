@@ -27,3 +27,7 @@ export type FunctionButtonsState = {
         display: string
     }
 }
+export type CreateLocoParams = {
+    name: string,
+    cabId: number
+}

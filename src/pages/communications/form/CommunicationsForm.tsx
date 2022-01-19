@@ -1,8 +1,8 @@
 import React, {FormEvent} from 'react'
 import {SendCommsForm} from "../../../components";
-import {HandleSubmit} from "../../../utils";
 import {sendLog} from "../../../states";
 import {useDispatch} from "react-redux";
+import {HandleSubmit} from "../../../types";
 
 export const CommunicationsForm = () => {
     const dispatch = useDispatch()
