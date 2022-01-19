@@ -1,9 +1,10 @@
-import {useGlobalContext} from "../../../contexts";
+import {RootState} from "../../../states";
 import React from "react";
 import {LocosList} from "../../../components/locos";
+import {useSelector} from "react-redux";
 
 export const LocosIndex = () => {
-    const [{locos}] = useGlobalContext();
+  const locos = useSelector((state: RootState) => state.locos)
 
-    return <LocosList locos={locos}/>
+  return <LocosList locos={locos}/>
 }

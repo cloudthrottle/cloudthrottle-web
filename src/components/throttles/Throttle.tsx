@@ -1,153 +1,198 @@
 import {Loco} from "../../types";
-import {useGlobalContext} from "../../contexts";
-import {throttleActions} from "../../utils";
-import React, {SyntheticEvent, useState} from "react";
-import {Direction} from "@cloudthrottle/dcc-ex--commands";
-import {debounce} from "lodash"
+import {sendLog, setButtonValue, setDirection, setSpeed} from "../../states";
+import React, {SyntheticEvent} from "react";
+import {cabCommand, Direction, throttleCommand} from "@cloudthrottle/dcc-ex--commands";
+import {useDispatch} from "react-redux";
 
 type ThrottleProps = {
-    loco: Loco
+  loco: Loco
 }
 export const Throttle = ({loco}: ThrottleProps) => {
-    const {throttle: {speed, direction}} = loco
+  const {throttle: {speed, direction}} = loco
+  const dispatch = useDispatch()
 
-    const [globalContext, setGlobalContext] = useGlobalContext()
-    const {setSpeed, setDirection, setFunctionValue, setEStop} = throttleActions(globalContext, setGlobalContext);
+  const handleFunctionSubmit = (event: SyntheticEvent<HTMLFormElement, SubmitEvent>) => {
+    event.preventDefault()
 
-    const handleFunctionSubmit = (event: SyntheticEvent<HTMLFormElement, SubmitEvent>) => {
-        event.preventDefault()
-        return
+    const {nativeEvent: {submitter}} = event
+    const {name: nameValue, value: valueValue} = submitter as HTMLButtonElement
+    if (nameValue === "more") {
+      return
+    }
 
-        // const {nativeEvent: {submitter}} = event
-        // const {name, value} = submitter as HTMLButtonElement
-        // if (name === "more") {
-        //     return
-        // }
-        // setFunctionValue(loco, {
-        //     name: parseInt(name),
-        //     value: parseInt(value) as BitValue
-        // })
-    };
+    const name = parseInt(nameValue)
+    const value = parseInt(valueValue) === 0 ? 1 : 0;
+    const message = cabCommand({
+      cab: loco.cabId,
+      value,
+      func: name
+    })
 
-    const handleSpeedChange = (event: React.FormEvent<HTMLFormElement>) => {
-        console.debug("handleSpeedChange")
-        event.preventDefault()
-        const {target} = event
-        const formData = target as HTMLInputElement
-        const speed = formData.value
-        if (!speed) {
-            return
-        }
+    // Toggle the Button value attribute
+    dispatch(setButtonValue({loco, name, value}))
 
-        setSpeed(loco, parseInt(speed as string))
-    };
+    // Send Command
+    dispatch(sendLog(message))
+  };
 
-    const handleStopSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        console.debug("handleStopSubmit")
-        event.preventDefault()
+  const handleSpeedChange = (event: React.FormEvent<HTMLInputElement>) => {
+    console.debug("handleSpeedChange")
+    event.preventDefault()
 
-        setSpeed(loco, 0)
-    };
+    const {target} = event
+    const formData = target as HTMLInputElement
+    const speed = formData.valueAsNumber
+    if (!speed) {
+      return
+    }
 
-    const handleEStopSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        console.debug("handleEStopSubmit")
-        event.preventDefault()
+    const message = throttleCommand({
+      ...loco.throttle,
+      cab: loco.cabId,
+      speed: speed,
+    })
 
-        setEStop(loco)
-    };
+    // Updated the Speed attribute
+    dispatch(setSpeed({loco, speed}))
+    // Send Command
+    dispatch(sendLog(message))
+  };
 
-    const handleDirectionChange = (event: React.FormEvent<HTMLFormElement>) => {
-        console.debug("handleDirectionChange")
-        event.preventDefault()
-        const {target} = event
-        const formData = target as HTMLInputElement
-        const direction = formData.value
-        if (!direction) {
-            return
-        }
+  const handleStopSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    console.debug("handleStopSubmit")
+    event.preventDefault()
 
-        setDirection(loco, parseInt(direction as string))
-    };
+    const message = throttleCommand({
+      ...loco.throttle,
+      cab: loco.cabId,
+      speed: 0,
+    })
 
-    const buttons = loco.functionButtons.slice(0, 4)
-    return (
-        <div className="loco">
-            <div className="name">
-                <h2>{loco.name}</h2>
-            </div>
+    // Updated the Speed attribute
+    dispatch(setSpeed({loco, speed: 0}))
+    // Send Command
+    dispatch(sendLog(message))
+  };
 
-            <div className="view">
-                <button disabled={true}>view</button>
-            </div>
+  const handleEStopSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    console.debug("handleEStopSubmit")
+    event.preventDefault()
 
-            <form action={`/cabs/${loco.cabId}/e-stop`}
-                  method="post"
-                  className="e-stop"
-                  onSubmit={handleEStopSubmit}>
-                <button type="submit">E-Stop</button>
-            </form>
+    const message = throttleCommand({
+      ...loco.throttle,
+      cab: loco.cabId,
+      speed: -1,
+    })
 
-            <form action={`/cabs/${loco.cabId}/function`}
-                  method="post"
-                  className="functions"
-                  onSubmit={handleFunctionSubmit}>
-                {buttons.map((button, index) => {
-                    return <FunctionButton key={index}
-                                           labelName={button.display}
-                                           name={button.name}
-                                           value={button.value}/>;
-                })}
-                <button type="button" disabled={true}>more</button>
-            </form>
+    // Updated the Speed attribute
+    dispatch(setSpeed({loco, speed: -1}))
+    // Send Command
+    dispatch(sendLog(message))
+  };
 
-            <form action={`/cabs/${loco.cabId}/speed`}
-                  method="post"
-                  className="speed"
-                  onChange={handleSpeedChange}>
-                <input type="range"
-                       name="speed"
-                       defaultValue={speed}
-                       min={0}
-                       max={126}
-                />
-            </form>
+  const handleDirectionChange = (event: React.FormEvent<HTMLFormElement>) => {
+    console.debug("handleDirectionChange")
+    event.preventDefault()
 
-            <form action={`/cabs/${loco.cabId}/stop`}
-                  method="post"
-                  className="stop"
-                  onSubmit={handleStopSubmit}>
-                <button type="submit">Stop</button>
-            </form>
+    const {target} = event
+    const formData = target as HTMLInputElement
+    const directionValue = formData.value
+    if (!directionValue) {
+      return
+    }
+    const direction = parseInt(directionValue)
 
-            <form action={`/cabs/${loco.cabId}/direction`}
-                  method="post"
-                  className="direction"
-                  onChange={handleDirectionChange}>
-                <select name="direction"
-                        id="direction"
-                        defaultValue={direction}>
-                    <option value={Direction.FORWARD}>Forward</option>
-                    <option value={Direction.REVERSE}>Reverse</option>
-                </select>
-            </form>
-        </div>
-    )
+    const message = throttleCommand({
+      ...loco.throttle,
+      cab: loco.cabId,
+      direction: direction
+    })
+
+    // Updated the Direction attribute
+    dispatch(setDirection({loco, direction}))
+    // Send Command
+    dispatch(sendLog(message))
+  };
+
+  const buttons = Object.entries(loco.functionButtons)?.slice(0, 4) || []
+  return (
+    <div className="loco">
+      <div className="name">
+        <h2>{loco.name}</h2>
+      </div>
+
+      <div className="view">
+        <button disabled={true}>view</button>
+      </div>
+
+      <form action={`/cabs/${loco.cabId}/e-stop`}
+            method="post"
+            className="e-stop"
+            onSubmit={handleEStopSubmit}>
+        <button type="submit">E-Stop</button>
+      </form>
+
+      <form action={`/cabs/${loco.cabId}/function`}
+            method="post"
+            className="functions"
+            onSubmit={handleFunctionSubmit}>
+        {buttons.map((button, index) => {
+          const [name, {display, value}] = button
+          return <FunctionButton key={index}
+                                 labelName={display}
+                                 name={name}
+                                 value={value}/>;
+        })}
+        <button type="button" disabled={true}>more</button>
+      </form>
+
+      <form action={`/cabs/${loco.cabId}/speed`}
+            method="post"
+            className="speed">
+        <input type="range"
+               name="speed"
+               value={speed}
+               min={0}
+               max={126}
+               onChange={handleSpeedChange}
+        />
+      </form>
+
+      <form action={`/cabs/${loco.cabId}/stop`}
+            method="post"
+            className="stop"
+            onSubmit={handleStopSubmit}>
+        <button type="submit">Stop</button>
+      </form>
+
+      <form action={`/cabs/${loco.cabId}/direction`}
+            method="post"
+            className="direction"
+            onChange={handleDirectionChange}>
+        <select name="direction"
+                id="direction"
+                defaultValue={direction}>
+          <option value={Direction.FORWARD}>Forward</option>
+          <option value={Direction.REVERSE}>Reverse</option>
+        </select>
+      </form>
+    </div>
+  )
 }
 
 type FunctionButtonProps = {
-    labelName: string
-    name: number
-    value: number
+  labelName: string
+  name: string
+  value: number
 }
 
-const FunctionButton = ({name, value: initialValue, labelName}: FunctionButtonProps) => {
-    const [value, setValue] = useState(initialValue)
-
-    const handleOnClick = () => {
-        setValue((prevState => prevState === 0 ? 1 : 0))
-    }
-
-    return (
-        <button onClick={handleOnClick} disabled={true} name={name.toString()} value={value}>{labelName}</button>
-    )
+const FunctionButton = ({name, value, labelName}: FunctionButtonProps) => {
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const {target} = event
+    const button = target as HTMLButtonElement
+    button.blur()
+  }
+  return (
+    <button onClick={handleClick} name={name} value={value}>{labelName}</button>
+  )
 }

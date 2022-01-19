@@ -1,9 +1,10 @@
 import React from "react"
-import {useGlobalContext} from "../../contexts";
+import {RootState} from "../../states";
 import {Throttle} from "../../components";
+import {useSelector} from "react-redux";
 
 export const Throttles = () => {
-    const [{locos}] = useGlobalContext();
+    const locos = useSelector((state: RootState) => state.locos)
 
     return (
         <div>
@@ -12,7 +13,6 @@ export const Throttles = () => {
             <div className="container">
                 {locos.map((loco, index) => <Throttle key={index} loco={loco}/>)}
             </div>
-
         </div>
     )
 }

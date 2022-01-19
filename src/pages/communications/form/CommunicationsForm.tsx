@@ -1,28 +1,23 @@
 import React, {FormEvent} from 'react'
 import {SendCommsForm} from "../../../components";
-import {HandleSubmit, prependLogItem} from "../../../utils";
-import {useGlobalContext} from "../../../contexts";
-import {LogItem} from "../../../types";
+import {sendLog} from "../../../states";
+import {useDispatch} from "react-redux";
+import {HandleSubmit} from "../../../types";
 
 export const CommunicationsForm = () => {
-    const [{communications: {writer}}, setGlobalState] = useGlobalContext();
+    const dispatch = useDispatch()
 
-    const handleCommandSendSubmit: HandleSubmit = async (event: FormEvent) => {
-        console.debug("handleCommandSendSubmit")
-        event.preventDefault()
-        const {target} = event
-        const formData = new FormData(target as HTMLFormElement)
-        const command = formData.get('command')
-        if (!writer || !command) {
-            return
-        }
+    const handleCommandSendSubmit: HandleSubmit = (event: FormEvent) => {
+      console.debug("handleCommandSendSubmit")
+      event.preventDefault()
+      const {target} = event
+      const formData = new FormData(target as HTMLFormElement)
+      const command = formData.get('command')
+      if (!command) {
+        return
+      }
 
-        const log: LogItem = {
-            kind: "sent",
-            message: command.toString()
-        }
-        prependLogItem(setGlobalState, log)
-        await writer.write(command.toString())
+      dispatch(sendLog(command.toString()))
     }
 
     return <SendCommsForm handleCommandSendSubmit={handleCommandSendSubmit}/>
