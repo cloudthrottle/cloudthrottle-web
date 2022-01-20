@@ -1,24 +1,16 @@
-import React, {FormEvent, useEffect} from 'react';
+import React, {FormEvent} from 'react';
 import './App.css';
 import {Link, Route, Routes} from "react-router-dom";
 import {CommunicationsPage, LocosPage, ThrottlesPage} from "../../pages";
-import {RootState, sendLog, setWriter} from "../../states";
+import {RootState, setWriter} from "../../states";
 import {createSerialConnection} from "@cloudthrottle/dcc-ex--serial-communicator";
 import {useDispatch, useSelector} from "react-redux";
 import {readHandler} from "../../utils";
-import {rosterCommand} from "@cloudthrottle/dcc-ex--commands";
 
 export const App = () => {
     const dispatch = useDispatch()
     const {connected} = useSelector((state: RootState) => state.communications)
     const handleRead = readHandler(dispatch);
-
-    useEffect(() => {
-        if (!connected) {
-            return
-        }
-        dispatch(sendLog(rosterCommand()))
-    }, [connected])
 
     const handleConnectionRequestSubmit = async (event: FormEvent) => {
         event.preventDefault()

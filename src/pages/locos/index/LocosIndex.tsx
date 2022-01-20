@@ -1,10 +1,30 @@
-import {RootState} from "../../../states";
+import {RootState, sendLog} from "../../../states";
 import React from "react";
 import {LocosList} from "../../../components/locos";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import {rosterCommand} from "@cloudthrottle/dcc-ex--commands";
 
 export const LocosIndex = () => {
     const locos = useSelector((state: RootState) => state.locos)
+    const dispatch = useDispatch()
 
-    return <LocosList locos={locos}/>
+    const handlePopulateSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        console.debug("handlePopulateSubmit")
+        event.preventDefault()
+        const message = rosterCommand()
+        // Send Command
+        dispatch(sendLog(message))
+    };
+
+    return (
+        <>
+            <form action={`/populate`}
+                  method="post"
+                  className="populate"
+                  onSubmit={handlePopulateSubmit}>
+                <button type="submit">Populate</button>
+            </form>
+            <LocosList locos={locos}/>
+        </>
+    )
 }
