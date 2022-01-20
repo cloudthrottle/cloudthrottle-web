@@ -8,12 +8,12 @@ import {Provider} from "react-redux";
 
 const rootElement = document.getElementById('root')
 ReactDOM.render(
-  <Provider store={store}>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/*" element={<App/>}/>
-      </Routes>
-    </BrowserRouter>
-  </Provider>,
-  rootElement
+    <Provider store={store}>
+        <BrowserRouter>
+            <Routes>
+                <Route path="/*" element={<App/>}/>
+            </Routes>
+        </BrowserRouter>
+    </Provider>,
+    rootElement
 );
