@@ -34,7 +34,7 @@ export const LocosForm = () => {
                 <input type="text" id="name" name="name" autoComplete="none"/>
 
                 <label htmlFor="cabId">Cab ID</label>
-                <input type="number" id="cabId" name="cabId" autoComplete="none"/>
+                <input type="number" id="cabId" name="cabId" autoComplete="none" min={1}/>
 
                 <button type="submit">Save</button>
             </form>
