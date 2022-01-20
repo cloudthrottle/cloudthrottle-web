@@ -17,3 +17,4 @@ ReactDOM.render(
     </Provider>,
     rootElement
 );
+export {handleParsedResult} from "./utils/HandleParsedCommandResult";

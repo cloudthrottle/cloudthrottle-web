@@ -2,34 +2,10 @@ import React, {FormEvent} from 'react';
 import './App.css';
 import {Link, Route, Routes} from "react-router-dom";
 import {CommunicationsPage, LocosPage, ThrottlesPage} from "../../pages";
-import {addLoco, addLog, RootState, setWriter} from "../../states";
-import {LogItem} from "../../types";
-import {createSerialConnection, ReadHandler} from "@cloudthrottle/dcc-ex--serial-communicator";
+import {RootState, setWriter} from "../../states";
+import {createSerialConnection} from "@cloudthrottle/dcc-ex--serial-communicator";
 import {useDispatch, useSelector} from "react-redux";
-import {genericParser, RosterItemResult} from "@cloudthrottle/dcc-ex--commands";
-import {Dispatch} from "@reduxjs/toolkit";
-
-export const readHandler = (dispatch: Dispatch<any>) => {
-    const handleRead: ReadHandler = async (value) => {
-        console.debug("READ: ", value)
-        const log: LogItem = {
-            message: value,
-            kind: "received"
-        }
-
-        const parser = genericParser()
-        try {
-            const result = await parser.parse(value)
-            if (result.parser === "rosterItemParser") {
-                const {params: {display, cabId}} = result as RosterItemResult
-                dispatch(addLoco({name: display, cabId}))
-            }
-        } finally {
-            dispatch(addLog(log))
-        }
-    }
-    return handleRead;
-};
+import {readHandler} from "../../utils";
 
 export const App = () => {
     const dispatch = useDispatch()

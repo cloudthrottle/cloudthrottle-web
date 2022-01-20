@@ -1,8 +1,9 @@
 import React, {FormEvent} from 'react'
-import {FakeReadCommsForm, readHandler, SendCommsForm} from "../../../components";
+import {FakeReadCommsForm, SendCommsForm} from "../../../components";
 import {sendLog} from "../../../states";
 import {useDispatch} from "react-redux";
 import {HandleSubmit} from "../../../types";
+import {readHandler} from "../../../utils";
 
 export const CommunicationsForm = () => {
     const dispatch = useDispatch()
