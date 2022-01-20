@@ -1,7 +1,7 @@
 import {createSlice, Draft, PayloadAction} from '@reduxjs/toolkit'
 import {CreateLocoParams, FunctionButtons, FunctionButtonsState, Loco, LocosState} from "../../types";
 import {BitValue} from "@cloudthrottle/dcc-ex--commands";
-import {ulid} from "ulidx";
+import {v4 as uuid} from "uuid"
 
 const initialState: LocosState = []
 
@@ -28,7 +28,7 @@ export const locosSlice = createSlice({
                 const functionButtons = functionButtonsState(buttons)
 
                 const loco: Loco = {
-                    id: ulid().toLowerCase(),
+                    id: uuid(),
                     name,
                     cabId,
                     throttle: {
