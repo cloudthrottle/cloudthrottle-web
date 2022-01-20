@@ -1,5 +1,5 @@
 import React from "react"
-import {Powers, Throttles} from "../../components";
+import {EStop, Powers, Throttles} from "../../components";
 
 export const ThrottlesPage = () => {
     return (
@@ -7,7 +7,10 @@ export const ThrottlesPage = () => {
             <h2>Throttles</h2>
 
             <div className="container">
-                <Powers/>
+                <div className="global-controls">
+                    <Powers/>
+                    <EStop/>
+                </div>
                 <Throttles/>
             </div>
         </div>

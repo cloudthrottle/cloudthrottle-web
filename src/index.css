@@ -22,6 +22,17 @@ code {
     margin-block-end: 3em;
 }
 
+.global-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 2.5em;
+}
+
+.global-controls > * {
+    flex: 1;
+}
+
 .loco {
     display: grid;
     grid-template-columns: repeat(8, 1fr);
@@ -71,6 +82,10 @@ button, select, input {
 
 .functions button:enabled[value="1"] {
     opacity: 0.8;
+}
+
+.loco button {
+    padding: 0;
 }
 
 .loco button, .loco input {

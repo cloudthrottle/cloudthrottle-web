@@ -47,6 +47,9 @@ export const locosSlice = createSlice({
       const locoIndex = state.findIndex((loco) => loco.name === name)
       state[locoIndex].throttle.speed = -1
     },
+    setEStopAll: (state: Draft<LocosState>) => {
+      state.forEach(loco => loco.throttle.speed = -1)
+    },
     setStop: (state, {payload: {loco: {name}}}: PayloadAction<{ loco: Loco }>) => {
       const locoIndex = state.findIndex((loco) => loco.name === name)
       state[locoIndex].throttle.speed = 0
@@ -59,6 +62,6 @@ export const locosSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const {addLoco, setSpeed, setDirection, setEStop, setStop, setButtonValue} = locosSlice.actions
+export const {addLoco, setSpeed, setDirection, setEStop, setEStopAll, setStop, setButtonValue} = locosSlice.actions
 
 export default locosSlice.reducer
