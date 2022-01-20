@@ -1,27 +1,40 @@
-import React, {FormEvent} from 'react';
+import React, {FormEvent, useEffect} from 'react';
 import './App.css';
 import {Link, Route, Routes} from "react-router-dom";
 import {CommunicationsPage, LocosPage, ThrottlesPage} from "../../pages";
-import {RootState, setWriter} from "../../states";
+import {RootState, sendLog, setWriter} from "../../states";
 import {createSerialConnection} from "@cloudthrottle/dcc-ex--serial-communicator";
 import {useDispatch, useSelector} from "react-redux";
 import {readHandler} from "../../utils";
+import {rosterCommand} from "@cloudthrottle/dcc-ex--commands";
 
 export const App = () => {
     const dispatch = useDispatch()
-    const {writer} = useSelector((state: RootState) => state.communications)
+    const {connected} = useSelector((state: RootState) => state.communications)
     const handleRead = readHandler(dispatch);
+
+    useEffect(() => {
+        if (!connected) {
+            return
+        }
+        dispatch(sendLog(rosterCommand()))
+    }, [connected])
 
     const handleConnectionRequestSubmit = async (event: FormEvent) => {
         event.preventDefault()
-        const {writer} = await createSerialConnection({readHandler: handleRead});
-        dispatch(setWriter(writer))
+        try {
+            const {writer} = await createSerialConnection({readHandler: handleRead});
+            dispatch(setWriter(writer))
+        } catch (e) {
+            console.debug(e)
+            return
+        }
     }
 
     return (
         <>
             <header>
-                <h1>Cloud Throttle {!!writer ? "🟢" : "🔴"}</h1>
+                <h1>Cloud Throttle {connected ? "🟢" : "🔴"}</h1>
                 <div className="nav-bar">
                     <nav>
                         <Link to="/communications">Comms</Link>

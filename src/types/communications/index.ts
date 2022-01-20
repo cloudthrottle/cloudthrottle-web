@@ -9,5 +9,6 @@ export type Writer = WritableStreamDefaultWriter<string> | null
 
 export type CommunicationsState = {
     writer: Writer,
-    logs: Logs
+    logs: Logs,
+    connected: boolean
 }

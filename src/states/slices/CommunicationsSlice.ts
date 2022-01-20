@@ -4,7 +4,8 @@ import {CommunicationsState, LogItem, Writer} from "../../types";
 
 const initialState: CommunicationsState = {
     logs: [],
-    writer: null
+    writer: null,
+    connected: false
 }
 
 function writeToComms(writer: Writer, message: string) {
@@ -25,6 +26,7 @@ export const communicationsSlice = createSlice({
         },
         setWriter: (state, action) => {
             state.writer = action.payload
+            state.connected = true
         },
         sendLog: (state: Draft<CommunicationsState>, {payload: message}: PayloadAction<string>) => {
             const logItem: LogItem = {
