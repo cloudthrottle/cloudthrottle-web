@@ -1,7 +1,7 @@
 import React, {FormEvent} from 'react';
 import './App.css';
 import {Link, Route, Routes} from "react-router-dom";
-import {Communications, Locos, Throttles} from "../../pages";
+import {CommunicationsPage, LocosPage, ThrottlesPage} from "../../pages";
 import {addLog, setWriter} from "../../states";
 import {HandleSubmit, LogItem} from "../../types";
 import {createSerialConnection, ReadHandler} from "@cloudthrottle/dcc-ex--serial-communicator";
@@ -47,9 +47,9 @@ export const App = () => {
             </nav>
 
             <Routes>
-                <Route path="/communications/*" element={<Communications/>}/>
-                <Route path="/locos/*" element={<Locos/>}/>
-                <Route path="/throttles/*" element={<Throttles/>}/>
+                <Route path="/communications/*" element={<CommunicationsPage/>}/>
+                <Route path="/locos/*" element={<LocosPage/>}/>
+                <Route path="/throttles/*" element={<ThrottlesPage/>}/>
             </Routes>
         </div>
     )

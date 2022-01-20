@@ -4,7 +4,7 @@ import {CommunicationsIndex} from "./index/CommunicationsIndex";
 import {CommunicationsForm} from "./form/CommunicationsForm";
 import {Paths} from "../../types";
 
-export const Communications = () => {
+export const CommunicationsPage = () => {
     return (
         <div>
             <h2>Comms</h2>

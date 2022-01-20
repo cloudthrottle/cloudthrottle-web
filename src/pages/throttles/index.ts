@@ -1,1 +1,1 @@
-export * from "./Throttles"
+export * from "./ThrottlesPage"

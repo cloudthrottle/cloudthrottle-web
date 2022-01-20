@@ -1,1 +1,1 @@
-export * from "./Locos"
+export * from "./LocosPage"

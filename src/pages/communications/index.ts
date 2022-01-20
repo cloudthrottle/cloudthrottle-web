@@ -1,1 +1,1 @@
-export * from "./Communications"
+export * from "./CommunicationsPage"

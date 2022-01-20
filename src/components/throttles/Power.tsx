@@ -1,10 +1,9 @@
-import React from "react"
-import {RootState, sendLog, setAllPower} from "../../states";
-import {Throttle} from "../../components";
 import {useDispatch, useSelector} from "react-redux";
+import {RootState, sendLog, setAllPower} from "../../states";
+import React from "react";
 import {BitValue, powerCommand} from "@cloudthrottle/dcc-ex--commands";
 
-const Powers = () => {
+export const Powers = () => {
     const powers = useSelector((state: RootState) => state.powers)
     const dispatch = useDispatch()
 
@@ -45,18 +44,3 @@ const Powers = () => {
         </form>
     );
 };
-
-export const Throttles = () => {
-    const locos = useSelector((state: RootState) => state.locos)
-
-    return (
-        <div>
-            <h2>Throttles</h2>
-
-            <div className="container">
-                <Powers/>
-                {locos.map((loco, index) => <Throttle key={index} loco={loco}/>)}
-            </div>
-        </div>
-    )
-}

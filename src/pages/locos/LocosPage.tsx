@@ -4,7 +4,7 @@ import {LocosIndex} from "./index/LocosIndex";
 import {LocosForm} from "./form/LocosForm";
 import {Paths} from "../../types";
 
-export const Locos = () => {
+export const LocosPage = () => {
     return (
         <div>
             <h2>Locos</h2>
@@ -21,4 +21,4 @@ export const Locos = () => {
     )
 }
 
-export default Locos
+export default LocosPage
