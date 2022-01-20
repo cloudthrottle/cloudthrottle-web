@@ -1,6 +1,7 @@
 import {createSlice, Draft, PayloadAction} from '@reduxjs/toolkit'
 import {CreateLocoParams, FunctionButtonsState, Loco, LocosState} from "../../types";
 import {BitValue} from "@cloudthrottle/dcc-ex--commands";
+import {ulid} from "ulidx";
 
 const defaultFunctionButtonsState: FunctionButtonsState = Array.from(Array(30))
     .reduce((previousValue, currentValue, currentIndex) => {
@@ -24,6 +25,7 @@ export const locosSlice = createSlice({
             },
             prepare: ({name, cabId}: CreateLocoParams) => {
                 const loco: Loco = {
+                    id: ulid().toLowerCase(),
                     name,
                     cabId,
                     throttle: {
@@ -35,38 +37,38 @@ export const locosSlice = createSlice({
                 return {payload: loco}
             }
         },
-        setSpeed: (state, {payload: {loco: {name}, speed}}: PayloadAction<{ loco: Loco, speed: number }>) => {
-            const locoIndex = state.findIndex((loco) => loco.name === name)
+        setSpeed: (state, {payload: {loco: {id}, speed}}: PayloadAction<{ loco: Loco, speed: number }>) => {
+            const locoIndex = state.findIndex((loco) => loco.id === id)
             state[locoIndex].throttle.speed = speed
         },
         setDirection: (state, {
             payload: {
-                loco: {name},
+                loco: {id},
                 direction
             }
         }: PayloadAction<{ loco: Loco, direction: number }>) => {
-            const locoIndex = state.findIndex((loco) => loco.name === name)
+            const locoIndex = state.findIndex((loco) => loco.id === id)
             state[locoIndex].throttle.direction = direction
         },
-        setEStop: (state, {payload: {loco: {name}}}: PayloadAction<{ loco: Loco }>) => {
-            const locoIndex = state.findIndex((loco) => loco.name === name)
+        setEStop: (state, {payload: {loco: {id}}}: PayloadAction<{ loco: Loco }>) => {
+            const locoIndex = state.findIndex((loco) => loco.id === id)
             state[locoIndex].throttle.speed = -1
         },
         setEStopAll: (state: Draft<LocosState>) => {
             state.forEach(loco => loco.throttle.speed = -1)
         },
-        setStop: (state, {payload: {loco: {name}}}: PayloadAction<{ loco: Loco }>) => {
-            const locoIndex = state.findIndex((loco) => loco.name === name)
+        setStop: (state, {payload: {loco: {id}}}: PayloadAction<{ loco: Loco }>) => {
+            const locoIndex = state.findIndex((loco) => loco.id === id)
             state[locoIndex].throttle.speed = 0
         },
         setButtonValue: (state, {
             payload: {
-                loco: {name},
+                loco: {id},
                 name: fnName,
                 value
             }
         }: PayloadAction<{ loco: Loco, name: number, value: BitValue }>) => {
-            const locoIndex = state.findIndex((loco) => loco.name === name)
+            const locoIndex = state.findIndex((loco) => loco.id === id)
             state[locoIndex].functionButtons[fnName].value = value
         }
     },

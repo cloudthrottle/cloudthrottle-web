@@ -31,10 +31,10 @@ export const LocosForm = () => {
             <h2>New Loco</h2>
             <form action="locos/new" method="post" onSubmit={handleNewLocoSubmit}>
                 <label htmlFor="name">Name</label>
-                <input type="text" id="name" name="name"/>
+                <input type="text" id="name" name="name" autoComplete="none"/>
 
                 <label htmlFor="cabId">Cab ID</label>
-                <input type="number" id="cabId" name="cabId"/>
+                <input type="number" id="cabId" name="cabId" autoComplete="none"/>
 
                 <button type="submit">Save</button>
             </form>

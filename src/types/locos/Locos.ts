@@ -3,6 +3,7 @@ import {BitValue} from "@cloudthrottle/dcc-ex--commands";
 export type LocosState = Locos
 
 export type Loco = {
+    id: string,
     name: string,
     cabId: number
     throttle: ThrottleState

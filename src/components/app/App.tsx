@@ -14,36 +14,31 @@ export const App = () => {
 
     const handleConnectionRequestSubmit = async (event: FormEvent) => {
         event.preventDefault()
-        const {target} = event
-        const formData = new FormData(target as HTMLFormElement)
-        const communicator = formData.get('communicator')
-        if (communicator === "serial") {
-            const {writer} = await createSerialConnection({readHandler: handleRead});
-            dispatch(setWriter(writer))
-        }
+        const {writer} = await createSerialConnection({readHandler: handleRead});
+        dispatch(setWriter(writer))
     }
 
     return (
-        <div>
-            <h1>Cloud Throttle {!!writer ? "🟢" : "🔴"}</h1>
-            <form action="/communications/connect" method="post" onSubmit={handleConnectionRequestSubmit}>
-                <select name="communicator" id="communicator">
-                    <option value="serial">Serial</option>
-                </select>
-                <button type="submit">Connect</button>
-            </form>
-
-            <nav>
-                <Link to="/locos">Locos</Link>
-                <Link to="/communications">Comms</Link>
-                <Link to="/throttles">Throttles</Link>
-            </nav>
+        <>
+            <header>
+                <h1>Cloud Throttle {!!writer ? "🟢" : "🔴"}</h1>
+                <div className="nav-bar">
+                    <nav>
+                        <Link to="/communications">Comms</Link>
+                        <Link to="/locos">Locos</Link>
+                        <Link to="/throttles">Throttles</Link>
+                    </nav>
+                    <form action="/communications/connect" method="post" onSubmit={handleConnectionRequestSubmit}>
+                        <button type="submit">Connect</button>
+                    </form>
+                </div>
+            </header>
 
             <Routes>
                 <Route path="/communications/*" element={<CommunicationsPage/>}/>
                 <Route path="/locos/*" element={<LocosPage/>}/>
                 <Route path="/throttles/*" element={<ThrottlesPage/>}/>
             </Routes>
-        </div>
+        </>
     )
 }

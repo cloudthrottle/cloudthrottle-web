@@ -17,6 +17,8 @@ export const readHandler = (dispatch: Dispatch<any>) => {
         try {
             const result = await parser.parse(value)
             handleParsedResult(result, dispatch);
+        } catch {
+
         } finally {
             dispatch(addLog(log))
         }

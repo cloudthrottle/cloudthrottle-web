@@ -19,6 +19,9 @@ export const CommunicationsForm = () => {
         }
 
         dispatch(sendLog(command.toString()))
+
+        // @ts-ignore
+        target.reset()
     }
 
     const handleCommandFakeReadSubmit: HandleSubmit = (event: FormEvent) => {
@@ -33,12 +36,15 @@ export const CommunicationsForm = () => {
 
         const handleRead = readHandler(dispatch);
         handleRead(command.toString())
+
+        // @ts-ignore
+        target.reset()
     }
 
     return (
-        <>
+        <div className="comms-forms">
             <FakeReadCommsForm onSubmit={handleCommandFakeReadSubmit}/>
             <SendCommsForm handleCommandSendSubmit={handleCommandSendSubmit}/>
-        </>
+        </div>
     )
 }
