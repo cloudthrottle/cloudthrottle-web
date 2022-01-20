@@ -4,8 +4,8 @@ import {addLoco, setAllPower} from "../states";
 
 export function handleParsedResult(result: ParserResult<any>, dispatch: Dispatch<any>) {
     if (result.parser === FunctionName.ROSTER_ITEM) {
-        const {params: {display, cabId}} = result as RosterItemResult
-        dispatch(addLoco({name: display, cabId}))
+        const {params: {display, cabId, functionButtons: buttons}} = result as RosterItemResult
+        dispatch(addLoco({name: display, cabId, buttons}))
     }
     if (result.parser === FunctionName.POWER) {
         const {params: {power}} = result as PowerResult

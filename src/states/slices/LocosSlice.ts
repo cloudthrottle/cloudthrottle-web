@@ -1,19 +1,20 @@
 import {createSlice, Draft, PayloadAction} from '@reduxjs/toolkit'
-import {CreateLocoParams, FunctionButtonsState, Loco, LocosState} from "../../types";
+import {CreateLocoParams, FunctionButtons, FunctionButtonsState, Loco, LocosState} from "../../types";
 import {BitValue} from "@cloudthrottle/dcc-ex--commands";
 import {ulid} from "ulidx";
 
-const defaultFunctionButtonsState: FunctionButtonsState = Array.from(Array(30))
-    .reduce((previousValue, currentValue, currentIndex) => {
-        previousValue[currentIndex.toString()] = {
-            value: 0,
-            display: `F${currentIndex}`
-        }
-        return previousValue
-    }, {})
-
-
 const initialState: LocosState = []
+
+const functionButtonsState = (buttons: FunctionButtons = []): FunctionButtonsState => {
+    return Array.from(Array(30))
+        .reduce((previousValue, currentValue, currentIndex) => {
+            previousValue[currentIndex.toString()] = {
+                value: 0,
+                display: buttons[currentIndex]?.display ?? `F${currentIndex}`
+            }
+            return previousValue
+        }, {});
+};
 
 export const locosSlice = createSlice({
     name: 'locos',
@@ -23,7 +24,9 @@ export const locosSlice = createSlice({
             reducer: (state: Draft<LocosState>, action: PayloadAction<Loco>) => {
                 state.push(action.payload)
             },
-            prepare: ({name, cabId}: CreateLocoParams) => {
+            prepare: ({name, cabId, buttons}: CreateLocoParams) => {
+                const functionButtons = functionButtonsState(buttons)
+
                 const loco: Loco = {
                     id: ulid().toLowerCase(),
                     name,
@@ -32,7 +35,7 @@ export const locosSlice = createSlice({
                         speed: 0,
                         direction: 1
                     },
-                    functionButtons: defaultFunctionButtonsState
+                    functionButtons
                 }
                 return {payload: loco}
             }

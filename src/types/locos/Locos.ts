@@ -1,4 +1,5 @@
 import {BitValue} from "@cloudthrottle/dcc-ex--commands";
+import {FunctionButtonKind} from "@cloudthrottle/dcc-ex--commands/lib/types/parsers/rosters/rosterItemParser";
 
 export type LocosState = Locos
 
@@ -28,7 +29,16 @@ export type FunctionButtonsState = {
         display: string
     }
 }
+
+interface FunctionButton {
+    display: string;
+    kind: FunctionButtonKind;
+}
+
+export type FunctionButtons = FunctionButton[];
+
 export type CreateLocoParams = {
     name: string,
-    cabId: number
+    cabId: number,
+    buttons: FunctionButtons
 }
