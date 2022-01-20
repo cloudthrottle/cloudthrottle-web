@@ -1,5 +1,5 @@
 import React, {FormEvent} from 'react'
-import {SendCommsForm} from "../../../components";
+import {FakeReadCommsForm, readHandler, SendCommsForm} from "../../../components";
 import {sendLog} from "../../../states";
 import {useDispatch} from "react-redux";
 import {HandleSubmit} from "../../../types";
@@ -20,5 +20,24 @@ export const CommunicationsForm = () => {
         dispatch(sendLog(command.toString()))
     }
 
-    return <SendCommsForm handleCommandSendSubmit={handleCommandSendSubmit}/>
+    const handleCommandFakeReadSubmit: HandleSubmit = (event: FormEvent) => {
+        console.debug("handleCommandFakeReadSubmit")
+        event.preventDefault()
+        const {target} = event
+        const formData = new FormData(target as HTMLFormElement)
+        const command = formData.get('command')
+        if (!command) {
+            return
+        }
+
+        const handleRead = readHandler(dispatch);
+        handleRead(command.toString())
+    }
+
+    return (
+        <>
+            <FakeReadCommsForm onSubmit={handleCommandFakeReadSubmit}/>
+            <SendCommsForm handleCommandSendSubmit={handleCommandSendSubmit}/>
+        </>
+    )
 }
