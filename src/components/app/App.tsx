@@ -2,13 +2,14 @@ import React, {FormEvent} from 'react';
 import './App.css';
 import {Link, Route, Routes} from "react-router-dom";
 import {CommunicationsPage, LocosPage, ThrottlesPage} from "../../pages";
-import {addLog, setWriter} from "../../states";
+import {addLog, RootState, setWriter} from "../../states";
 import {HandleSubmit, LogItem} from "../../types";
 import {createSerialConnection, ReadHandler} from "@cloudthrottle/dcc-ex--serial-communicator";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 
 export const App = () => {
     const dispatch = useDispatch()
+    const {writer} = useSelector((state: RootState) => state.communications)
 
     const handleConnectionRequestSubmit = async (event: FormEvent) => {
         event.preventDefault()
@@ -32,7 +33,7 @@ export const App = () => {
 
     return (
         <div>
-            <h1>Cloud Throttle</h1>
+            <h1>Cloud Throttle {!!writer ? "🟢" : "🔴"}</h1>
             <form action="/communications/connect" method="post" onSubmit={handleConnectionRequestSubmit}>
                 <select name="communicator" id="communicator">
                     <option value="serial">Serial</option>

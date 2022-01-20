@@ -5,7 +5,9 @@ export type LogItem = {
 
 export type Logs = LogItem[]
 
+export type Writer = WritableStreamDefaultWriter<string> | null
+
 export type CommunicationsState = {
-    writer: WritableStreamDefaultWriter<string> | null,
+    writer: Writer,
     logs: Logs
 }

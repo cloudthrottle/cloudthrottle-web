@@ -1,10 +1,19 @@
 import {createSlice, Draft, PayloadAction} from '@reduxjs/toolkit'
-import {CommunicationsState, LogItem} from "../../types";
+import {CommunicationsState, LogItem, Writer} from "../../types";
 
 
 const initialState: CommunicationsState = {
     logs: [],
     writer: null
+}
+
+function writeToComms(writer: Writer, message: string) {
+    if (writer) {
+        void writer.write(message)
+        return
+    } else {
+        console.debug("WRITE:", message)
+    }
 }
 
 export const communicationsSlice = createSlice({
@@ -17,17 +26,13 @@ export const communicationsSlice = createSlice({
         setWriter: (state, action) => {
             state.writer = action.payload
         },
-        sendLog: (state, {payload: message}: PayloadAction<string>) => {
-            if (!state.writer) {
-                return
-            }
-
+        sendLog: (state: Draft<CommunicationsState>, {payload: message}: PayloadAction<string>) => {
             const logItem: LogItem = {
                 kind: "sent",
                 message
             }
             state.logs = [logItem, ...state.logs]
-            void state.writer.write(message)
+            writeToComms(state.writer, message);
         }
     }
 })
