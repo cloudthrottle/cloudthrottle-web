@@ -6,7 +6,7 @@ import {v4 as uuid} from "uuid"
 const initialState: LocosState = []
 
 const functionButtonsState = (buttons: FunctionButtons = []): FunctionButtonsState => {
-    return Array.from(Array(30))
+    return Array.from(Array(29))
         .reduce((previousValue, currentValue, currentIndex) => {
             previousValue[currentIndex.toString()] = {
                 value: 0,
