@@ -1,19 +1,23 @@
 import {createSlice, Draft, PayloadAction} from '@reduxjs/toolkit'
-import {CreateLocoParams, FunctionButtons, FunctionButtonsState, Loco, LocosState} from "../../types";
-import {BitValue} from "@cloudthrottle/dcc-ex--commands";
+import {CreateLocoParams, Loco, LocosState, PartialFunctionButtons} from "../../types";
+import {BitValue, FunctionButtonKind, FunctionButtons} from "@cloudthrottle/dcc-ex--commands";
 import {v4 as uuid} from "uuid"
 
 const initialState: LocosState = []
 
-const functionButtonsState = (buttons: FunctionButtons = []): FunctionButtonsState => {
-    return Array.from(Array(29))
-        .reduce((previousValue, currentValue, currentIndex) => {
-            previousValue[currentIndex.toString()] = {
+const functionButtonsState = (buttons: PartialFunctionButtons = []): FunctionButtons => {
+    return Array(29).fill(null)
+        .reduce((acc, currentValue, currentIndex) => {
+            const buttonData = buttons[currentIndex]
+
+            acc[currentIndex] = {
                 value: 0,
-                display: buttons[currentIndex]?.display ?? `F${currentIndex}`
+                display: `F${currentIndex}`,
+                kind: FunctionButtonKind.TOGGLE,
+                ...buttonData
             }
-            return previousValue
-        }, {});
+            return acc
+        }, {} as FunctionButtons);
 };
 
 export const locosSlice = createSlice({

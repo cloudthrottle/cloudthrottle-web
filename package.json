@@ -17,7 +17,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@cloudthrottle/dcc-ex--commands": "^0.8.0",
+    "@cloudthrottle/dcc-ex--commands": "^0.9.1",
     "@cloudthrottle/dcc-ex--serial-communicator": "^0.1.0",
     "@reduxjs/toolkit": "^1.7.1",
     "@testing-library/jest-dom": "^5.16.1",
