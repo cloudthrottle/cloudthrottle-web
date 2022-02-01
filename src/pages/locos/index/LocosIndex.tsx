@@ -22,7 +22,7 @@ export const LocosIndex = () => {
                   method="post"
                   className="populate"
                   onSubmit={handlePopulateSubmit}>
-                <button type="submit">Populate</button>
+                <button type="submit">Populate from Roster</button>
             </form>
             <LocosList locos={locos}/>
         </>

@@ -1,46 +1,21 @@
 import {createSlice, Draft, PayloadAction} from '@reduxjs/toolkit'
-import {CreateLocoParams, Loco, LocosState, PartialFunctionButtons} from "../../types";
-import {BitValue, FunctionButtonKind, FunctionButtons} from "@cloudthrottle/dcc-ex--commands";
-import {v4 as uuid} from "uuid"
+import {AddLocoParams, Loco, LocosState} from "../../types";
+import {BitValue} from "@cloudthrottle/dcc-ex--commands";
+import {buildFunctionButtons, buildLoco, findOrAddLoco} from "../../repositories/locos";
 
 const initialState: LocosState = []
-
-const functionButtonsState = (buttons: PartialFunctionButtons = []): FunctionButtons => {
-    return Array(29).fill(null)
-        .reduce((acc, currentValue, currentIndex) => {
-            const buttonData = buttons[currentIndex]
-
-            acc[currentIndex] = {
-                value: 0,
-                display: `F${currentIndex}`,
-                kind: FunctionButtonKind.TOGGLE,
-                ...buttonData
-            }
-            return acc
-        }, {} as FunctionButtons);
-};
 
 export const locosSlice = createSlice({
     name: 'locos',
     initialState,
     reducers: {
         addLoco: {
-            reducer: (state: Draft<LocosState>, action: PayloadAction<Loco>) => {
-                state.push(action.payload)
+            reducer: (state: Draft<LocosState>, {payload: loco}: PayloadAction<Loco>) => {
+                findOrAddLoco({state, loco})
             },
-            prepare: ({name, cabId, buttons}: CreateLocoParams) => {
-                const functionButtons = functionButtonsState(buttons)
-
-                const loco: Loco = {
-                    id: uuid(),
-                    name,
-                    cabId,
-                    throttle: {
-                        speed: 0,
-                        direction: 1
-                    },
-                    functionButtons
-                }
+            prepare: ({name, cabId, buttons}: AddLocoParams) => {
+                const functionButtons = buildFunctionButtons(buttons)
+                const loco: Loco = buildLoco({name, cabId, functionButtons})
                 return {payload: loco}
             }
         },
