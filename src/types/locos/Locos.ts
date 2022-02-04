@@ -1,6 +1,15 @@
 import {FunctionButton, FunctionButtons} from "@cloudthrottle/dcc-ex--commands";
 
-export type LocosState = Locos
+export type LocosState = {
+    entities: Locos
+}
+
+export type DateTime = number
+
+export type LocoSync = {
+    rosterListAt: DateTime | null;
+    rosterItemAt: DateTime | null;
+}
 
 export type Loco = {
     id: string,
@@ -8,13 +17,12 @@ export type Loco = {
     cabId: number
     throttle: ThrottleState
     functionButtons: FunctionButtons,
-    sync: {
-        rosterListAt: Date | null,
-        rosterItemAt: Date | null,
-    }
+    sync: LocoSync
 }
 
-export type Locos = Loco[]
+export type Locos = {
+    [cabId: number]: Loco
+}
 
 export type ThrottleState = {
     speed: number,

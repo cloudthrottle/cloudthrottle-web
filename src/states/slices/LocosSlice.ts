@@ -1,9 +1,11 @@
 import {createSlice, Draft, PayloadAction} from '@reduxjs/toolkit'
 import {AddLocoParams, Loco, LocosState} from "../../types";
 import {BitValue} from "@cloudthrottle/dcc-ex--commands";
-import {buildFunctionButtons, buildLoco, findOrAddLoco} from "../../repositories/locos";
+import {buildFunctionButtons, buildLoco, updateOrAddLoco, updateOrAddRosterLoco} from "../../repositories/locos";
 
-const initialState: LocosState = []
+const initialState: LocosState = {
+    entities: {}
+}
 
 export const locosSlice = createSlice({
     name: 'locos',
@@ -11,7 +13,7 @@ export const locosSlice = createSlice({
     reducers: {
         addLoco: {
             reducer: (state: Draft<LocosState>, {payload: loco}: PayloadAction<Loco>) => {
-                findOrAddLoco({state, loco})
+                updateOrAddLoco({state, loco})
             },
             prepare: ({name, cabId, buttons}: AddLocoParams) => {
                 const functionButtons = buildFunctionButtons(buttons)
@@ -19,44 +21,57 @@ export const locosSlice = createSlice({
                 return {payload: loco}
             }
         },
-        setSpeed: (state, {payload: {loco: {id}, speed}}: PayloadAction<{ loco: Loco, speed: number }>) => {
-            const locoIndex = state.findIndex((loco) => loco.id === id)
-            state[locoIndex].throttle.speed = speed
+        addRosterLoco: {
+            reducer: (state: Draft<LocosState>, {payload: loco}: PayloadAction<Loco>) => {
+                return updateOrAddRosterLoco({state, loco})
+            },
+            prepare: ({name, cabId, buttons}: AddLocoParams) => {
+                const functionButtons = buildFunctionButtons(buttons)
+                const loco: Loco = buildLoco({
+                    name,
+                    cabId,
+                    functionButtons,
+                    sync: {
+                        rosterListAt: Date.now(),
+                        rosterItemAt: null
+                    }
+                })
+                return {payload: loco}
+            }
+        },
+        setSpeed: (state, {payload: {loco, speed}}: PayloadAction<{ loco: Loco, speed: number }>) => {
+            state.entities[loco.cabId].throttle.speed = speed
         },
         setDirection: (state, {
             payload: {
-                loco: {id},
+                loco,
                 direction
             }
         }: PayloadAction<{ loco: Loco, direction: number }>) => {
-            const locoIndex = state.findIndex((loco) => loco.id === id)
-            state[locoIndex].throttle.direction = direction
+            state.entities[loco.cabId].throttle.direction = direction
         },
-        setEStop: (state, {payload: {loco: {id}}}: PayloadAction<{ loco: Loco }>) => {
-            const locoIndex = state.findIndex((loco) => loco.id === id)
-            state[locoIndex].throttle.speed = -1
+        setEStop: (state, {payload: {loco}}: PayloadAction<{ loco: Loco }>) => {
+            state.entities[loco.cabId].throttle.speed = -1
         },
         setEStopAll: (state: Draft<LocosState>) => {
-            state.forEach(loco => loco.throttle.speed = -1)
+            Object.values(state.entities).forEach(loco => loco.throttle.speed = -1)
         },
-        setStop: (state, {payload: {loco: {id}}}: PayloadAction<{ loco: Loco }>) => {
-            const locoIndex = state.findIndex((loco) => loco.id === id)
-            state[locoIndex].throttle.speed = 0
+        setStop: (state, {payload: {loco}}: PayloadAction<{ loco: Loco }>) => {
+            state.entities[loco.cabId].throttle.speed = 0
         },
         setButtonValue: (state, {
             payload: {
-                loco: {id},
+                loco,
                 name: fnName,
                 value
             }
         }: PayloadAction<{ loco: Loco, name: number, value: BitValue }>) => {
-            const locoIndex = state.findIndex((loco) => loco.id === id)
-            state[locoIndex].functionButtons[fnName].value = value
+            state.entities[loco.cabId].functionButtons[fnName].value = value
         }
     },
 })
 
 // Action creators are generated for each case reducer function
-export const {addLoco, setSpeed, setDirection, setEStop, setEStopAll, setStop, setButtonValue} = locosSlice.actions
+export const {addLoco, addRosterLoco, setSpeed, setDirection, setEStop, setEStopAll, setStop, setButtonValue} = locosSlice.actions
 
 export default locosSlice.reducer

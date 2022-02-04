@@ -7,13 +7,13 @@ type LocosListProps = {
 }
 
 export const LocosList = ({locos}: LocosListProps) => {
-    if (!locos.length) {
+    if (!Object.values(locos).length) {
         return <EmptyLocosList/>
     }
 
     return (
         <ul>
-            {locos.map((loco, index) => <LocosListItem loco={loco} key={index}/>)}
+            {Object.entries(locos).map(([cabId, loco]) => <LocosListItem loco={loco} key={cabId}/>)}
         </ul>
     )
 }
