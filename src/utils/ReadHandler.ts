@@ -4,10 +4,12 @@ import {LogItem} from "../types";
 import {genericParser} from "@cloudthrottle/dcc-ex--commands";
 import {handleParsedResult} from "./HandleParsedCommandResult";
 import {addLog} from "../states";
+import {commandReceived} from "../states/actions";
 
 export const readHandler = (dispatch: Dispatch<any>) => {
     const handleRead: ReadHandler = async (value) => {
         console.debug("READ: ", value)
+        dispatch(commandReceived(value))
         const log: LogItem = {
             message: value,
             kind: "received"
