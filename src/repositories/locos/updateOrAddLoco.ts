@@ -1,4 +1,4 @@
-import {Loco, LocosState, LocoSync} from "../../types";
+import {Loco, LocosState} from "../../types";
 import {Draft} from "@reduxjs/toolkit";
 
 type FindOrAddLocoParams = {

@@ -40,7 +40,6 @@ export const App = () => {
             </header>
 
             <Routes>
-                <Route index element={<CommunicationsPage/>}/>
                 <Route path="/communications/*" element={<CommunicationsPage/>}/>
                 <Route path="/locos/*" element={<LocosPage/>}/>
                 <Route path="/throttles/*" element={<ThrottlesPage/>}/>

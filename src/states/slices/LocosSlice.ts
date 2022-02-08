@@ -72,6 +72,15 @@ export const locosSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const {addLoco, addRosterLoco, setSpeed, setDirection, setEStop, setEStopAll, setStop, setButtonValue} = locosSlice.actions
+export const {
+    addLoco,
+    addRosterLoco,
+    setSpeed,
+    setDirection,
+    setEStop,
+    setEStopAll,
+    setStop,
+    setButtonValue
+} = locosSlice.actions
 
 export default locosSlice.reducer
