@@ -15,7 +15,7 @@ export const locosSlice = createSlice({
             reducer: (state: Draft<LocosState>, {payload: loco}: PayloadAction<Loco>) => {
                 updateOrAddLoco({state, loco})
             },
-            prepare: ({name, cabId, buttons}: AddLocoParams) => {
+            prepare: ({name, cabId, functionButtons: buttons}: AddLocoParams) => {
                 const functionButtons = buildFunctionButtons(buttons)
                 const loco: Loco = buildLoco({name, cabId, functionButtons})
                 return {payload: loco}
@@ -25,7 +25,7 @@ export const locosSlice = createSlice({
             reducer: (state: Draft<LocosState>, {payload: loco}: PayloadAction<Loco>) => {
                 return updateOrAddRosterLoco({state, loco})
             },
-            prepare: ({name, cabId, buttons}: AddLocoParams) => {
+            prepare: ({name, cabId, functionButtons: buttons}: AddLocoParams) => {
                 const functionButtons = buildFunctionButtons(buttons)
                 const loco: Loco = buildLoco({
                     name,

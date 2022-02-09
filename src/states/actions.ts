@@ -1,24 +1,18 @@
 import {createAction} from "@reduxjs/toolkit";
-import {
-    FunctionName,
-    genericParser,
-    ParserResult,
-    RosterItemResult,
-    ThrottleResult
-} from "@cloudthrottle/dcc-ex--commands";
+import {FunctionName, genericParser, ParserResult, RosterItemResult} from "@cloudthrottle/dcc-ex--commands";
 import {call, put, takeEvery, takeLatest} from 'redux-saga/effects'
-import {AddLocoParams, Loco, Writer} from "../types";
+import {AddLocoParams, Writer} from "../types";
+import {
+    commandParsedFailed,
+    commandParsedSuccess,
+    commandReceived,
+    commandSend,
+    commandWrite,
+    rosterItemCommandParsed,
+    throttleCommandParsed
+} from "./actions/commands";
+import {communicationsConnected, communicationsDisconnected, setCommunicationsWriter} from "./actions/communications";
 
-export const commandReceived = createAction<string>('COMMAND_RECEIVED')
-export const commandSend = createAction<string>('COMMAND_SEND')
-const commandParsedSuccess = createAction<ParserResult<any>>('COMMAND_PARSED_SUCCESS')
-const commandParsedFailed = createAction('COMMAND_PARSED_FAILED')
-const throttleCommandParsed = createAction<ThrottleResult>('THROTTLE_COMMAND_PARSED')
-const rosterItemCommandParsed = createAction<RosterItemResult>('ROSTER_ITEM_COMMAND_PARSED')
-export const commandWrite = createAction<string>('COMMAND_WRITE')
-export const setCommunicationsWriter = createAction<Writer>('SET_COMMUNICATIONS_WRITER')
-export const communicationsConnected = createAction('COMMUNICATIONS_CONNECTED')
-export const communicationsDisconnected = createAction('COMMUNICATIONS_DISCONNECTED')
 export const rosterItemUpdated = createAction<AddLocoParams>('ROSTER_ITEM_UPDATED')
 
 function* handleParsedCommand({payload}: { type: string, payload: ParserResult<any> }) {
@@ -58,13 +52,13 @@ function* handleSetCommunicationsWriter({payload}: { type: string, payload: Writ
     }
 }
 
-function* handleRosterItemCommandParsed({payload}: {type: string, payload: RosterItemResult}) {
+function* handleRosterItemCommandParsed({payload}: { type: string, payload: RosterItemResult }) {
     console.debug("handleRosterItemCommandParsed", payload);
     const {params: {cabId, display, functionButtons}} = payload
     const loco: AddLocoParams = {
         cabId,
         name: display,
-        buttons: functionButtons
+        functionButtons
     }
     yield put(rosterItemUpdated(loco))
 }

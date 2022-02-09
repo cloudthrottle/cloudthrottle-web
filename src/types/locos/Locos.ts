@@ -25,7 +25,7 @@ export type PartialLoco = {
     name: string,
     cabId: number
     throttle: Partial<ThrottleState>
-    functionButtons: FunctionButtons<Partial<FunctionButton>>,
+    functionButtons: PartialFunctionButtons,
     sync: Partial<LocoSync>
 }
 

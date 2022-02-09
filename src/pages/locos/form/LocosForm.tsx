@@ -20,7 +20,7 @@ export const LocosForm = () => {
         dispatch(addLoco({
             name: name.toString(),
             cabId: parseInt(cabId.toString()),
-            buttons: []
+            functionButtons: {}
         }))
 
         // @ts-ignore

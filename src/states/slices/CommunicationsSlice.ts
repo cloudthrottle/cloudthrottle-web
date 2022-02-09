@@ -1,6 +1,6 @@
 import {createSlice, Draft, PayloadAction} from '@reduxjs/toolkit'
 import {CommunicationsState, LogItem, Writer} from "../../types";
-import {commandSend} from "../actions";
+import {commandSend} from "../actions/commands";
 
 
 const initialState: CommunicationsState = {

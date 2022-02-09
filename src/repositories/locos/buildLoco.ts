@@ -1,7 +1,7 @@
 import {AddLocoParams, Loco, LocoSync, ThrottleState} from "../../types";
 import {v4 as uuid} from "uuid";
 import {buildFunctionButtons} from "./buildFunctionButtons";
-import {FunctionButton, FunctionButtonKind, FunctionButtons} from "@cloudthrottle/dcc-ex--commands";
+import {FunctionButton, FunctionButtons} from "@cloudthrottle/dcc-ex--commands";
 
 export type BuildLocoParams = AddLocoParams
 type BuildLoco = (params: BuildLocoParams) => Loco
@@ -21,13 +21,16 @@ function mergeThrottle({existingThrottle, throttle}: MergeThrottleParams): Throt
     }
 }
 
-type MergeFunctionButtonsParams = { functionButtons: FunctionButtons<Partial<FunctionButton>> | undefined; existingFunctionButtons: FunctionButtons<FunctionButton> };
+type MergeFunctionButtonsParams = { functionButtons: FunctionButtons<Partial<FunctionButton>> | undefined; existingFunctionButtons: FunctionButtons };
 
 function mergeFunctionButtons({functionButtons, existingFunctionButtons}: MergeFunctionButtonsParams): FunctionButtons {
     return Object.entries(existingFunctionButtons).reduce((acc, [currentKey, currentValue]) => {
-        const buttonData = functionButtons[currentKey]
+        let buttonData = {}
+        if (functionButtons) {
+            buttonData = functionButtons[parseInt(currentKey)]
+        }
 
-        acc[currentKey] = {
+        acc[parseInt(currentKey)] = {
             ...currentValue,
             ...buttonData
         }
@@ -83,8 +86,8 @@ export const buildLoco: BuildLoco = (params) => {
         }
     }
 
-    return {
-        ...defaultParams,
-        ...params
-    };
+    return mergeLoco({
+        existingLoco: defaultParams,
+        loco: params
+    })
 }

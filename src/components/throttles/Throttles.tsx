@@ -6,7 +6,7 @@ import {Powers} from "./Power";
 import {EStop} from "./EStop";
 
 export const Throttles = () => {
-    const locos = useSelector((state: RootState) => Object.values(state.locos.entities))
+    const locos = useSelector((state: RootState) => Object.values(state.roster.entities))
 
     if (!locos.length) {
         return <EmptyThrottlesList/>

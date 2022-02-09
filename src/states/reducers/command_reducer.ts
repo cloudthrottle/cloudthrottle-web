@@ -1,6 +1,7 @@
 import {createReducer} from "@reduxjs/toolkit";
 import {CommunicationsState, LogItem} from "../../types";
-import {commandReceived, commandSend, commandWrite, setCommunicationsWriter} from "../actions";
+import {commandReceived, commandSend, commandWrite} from "../actions/commands";
+import {setCommunicationsWriter} from "../actions/communications";
 
 const initialState: CommunicationsState = {
     logs: [],

@@ -1,7 +1,7 @@
 import {createReducer} from "@reduxjs/toolkit";
-import {AddLocoParams, Loco, LocosState} from "../../types";
+import {LocosState} from "../../types";
 import {rosterItemUpdated} from "../actions";
-import {buildLoco} from "../../repositories/locos";
+import {buildLoco, mergeLoco} from "../../repositories/locos";
 
 const initialState: LocosState = {
     entities: {}
@@ -9,21 +9,13 @@ const initialState: LocosState = {
 
 export const rostersReducer = createReducer(initialState, builder => {
     builder.addCase(rosterItemUpdated, (state, {payload}) => {
-        console.log("locosReducer", payload);
-        const {name, cabId, buttons: functionButtons} = payload
+        const {cabId} = payload
 
         if (state.entities.hasOwnProperty(cabId)) {
-            // const existingLoco: Loco = state.entities[cabId]
-            // const existingLocoButtons = existingLoco.functionButtons
-            // const newButtons = {
-            //
-            // }
-            // state.entities[cabId] = {
-            //     ...existingLoco,
-            //
-            // }
+            const existingLoco = state.entities[cabId]
+            state.entities[cabId] = mergeLoco({loco: payload, existingLoco})
         } else {
-            state.entities[cabId] = buildLoco({name, cabId, functionButtons})
+            state.entities[cabId] = buildLoco(payload)
         }
     })
 })

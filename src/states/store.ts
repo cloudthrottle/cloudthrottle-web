@@ -1,6 +1,4 @@
 import {configureStore} from '@reduxjs/toolkit'
-import locosReducer from "./slices/LocosSlice";
-import communicationsReducer from "./slices/CommunicationsSlice";
 import powersReducer from "./slices/PowerSlice";
 import createSagaMiddleware from 'redux-saga';
 import commandSaga from "./actions";
@@ -11,7 +9,7 @@ const sagaMiddleware = createSagaMiddleware()
 
 export const store = configureStore({
     reducer: {
-        locos: locosReducer,
+        // locos: locosReducer,
         // communications: communicationsReducer,
         powers: powersReducer,
         communications: commandReducer,

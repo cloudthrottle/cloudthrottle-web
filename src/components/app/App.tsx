@@ -2,11 +2,11 @@ import React, {FormEvent} from 'react';
 import './App.css';
 import {Link, Route, Routes} from "react-router-dom";
 import {CommunicationsPage, LocosPage, ThrottlesPage} from "../../pages";
-import {RootState, setWriter} from "../../states";
+import {RootState} from "../../states";
 import {createSerialConnection} from "@cloudthrottle/dcc-ex--serial-communicator";
 import {useDispatch, useSelector} from "react-redux";
 import {readHandler} from "../../utils";
-import {setCommunicationsWriter} from "../../states/actions";
+import {setCommunicationsWriter} from "../../states/actions/communications";
 
 export const App = () => {
     const dispatch = useDispatch()
