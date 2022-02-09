@@ -11,34 +11,6 @@ export const locosSlice = createSlice({
     name: 'locos',
     initialState,
     reducers: {
-        addLoco: {
-            reducer: (state: Draft<LocosState>, {payload: loco}: PayloadAction<Loco>) => {
-                updateOrAddLoco({state, loco})
-            },
-            prepare: ({name, cabId, functionButtons: buttons}: AddLocoParams) => {
-                const functionButtons = buildFunctionButtons(buttons)
-                const loco: Loco = buildLoco({name, cabId, functionButtons})
-                return {payload: loco}
-            }
-        },
-        addRosterLoco: {
-            reducer: (state: Draft<LocosState>, {payload: loco}: PayloadAction<Loco>) => {
-                return updateOrAddRosterLoco({state, loco})
-            },
-            prepare: ({name, cabId, functionButtons: buttons}: AddLocoParams) => {
-                const functionButtons = buildFunctionButtons(buttons)
-                const loco: Loco = buildLoco({
-                    name,
-                    cabId,
-                    functionButtons,
-                    sync: {
-                        rosterListAt: Date.now(),
-                        rosterItemAt: null
-                    }
-                })
-                return {payload: loco}
-            }
-        },
         setSpeed: (state, {payload: {loco, speed}}: PayloadAction<{ loco: Loco, speed: number }>) => {
             state.entities[loco.cabId].throttle.speed = speed
         },
@@ -73,8 +45,6 @@ export const locosSlice = createSlice({
 
 // Action creators are generated for each case reducer function
 export const {
-    addLoco,
-    addRosterLoco,
     setSpeed,
     setDirection,
     setEStop,

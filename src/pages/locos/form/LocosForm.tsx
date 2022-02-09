@@ -1,7 +1,7 @@
-import {addLoco} from "../../../states";
 import React, {FormEvent} from "react";
 import {useDispatch} from "react-redux";
 import {HandleSubmit} from "../../../types";
+import {newLocoFormSubmit} from "../../../states/actions/locos";
 
 export const LocosForm = () => {
     const dispatch = useDispatch()
@@ -17,10 +17,9 @@ export const LocosForm = () => {
             return
         }
 
-        dispatch(addLoco({
+        dispatch(newLocoFormSubmit({
             name: name.toString(),
-            cabId: parseInt(cabId.toString()),
-            functionButtons: {}
+            cabId: parseInt(cabId.toString())
         }))
 
         // @ts-ignore

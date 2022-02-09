@@ -1,14 +1,14 @@
 import {createReducer} from "@reduxjs/toolkit";
 import {LocosState} from "../../types";
-import {rosterItemUpdated} from "../actions";
 import {buildLoco, mergeLoco} from "../../repositories/locos";
+import {addOrUpdateLoco, rosterItemUpdated} from "../actions/locos";
 
 const initialState: LocosState = {
     entities: {}
 }
 
 export const rostersReducer = createReducer(initialState, builder => {
-    builder.addCase(rosterItemUpdated, (state, {payload}) => {
+    builder.addCase(addOrUpdateLoco, (state, {payload}) => {
         const {cabId} = payload
 
         if (state.entities.hasOwnProperty(cabId)) {

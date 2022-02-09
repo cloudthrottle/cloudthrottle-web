@@ -1,4 +1,3 @@
-import {createAction} from "@reduxjs/toolkit";
 import {FunctionName, genericParser, ParserResult, RosterItemResult} from "@cloudthrottle/dcc-ex--commands";
 import {call, put, takeEvery, takeLatest} from 'redux-saga/effects'
 import {AddLocoParams, Writer} from "../types";
@@ -12,8 +11,7 @@ import {
     throttleCommandParsed
 } from "./actions/commands";
 import {communicationsConnected, communicationsDisconnected, setCommunicationsWriter} from "./actions/communications";
-
-export const rosterItemUpdated = createAction<AddLocoParams>('ROSTER_ITEM_UPDATED')
+import {addOrUpdateLoco, newLocoFormSubmit, rosterItemUpdated} from "./actions/locos";
 
 function* handleParsedCommand({payload}: { type: string, payload: ParserResult<any> }) {
     console.debug("handleParsedCommand", payload);
@@ -63,12 +61,19 @@ function* handleRosterItemCommandParsed({payload}: { type: string, payload: Rost
     yield put(rosterItemUpdated(loco))
 }
 
+function* handleAddedOrUpdatedLoco({payload}: { type: string, payload: AddLocoParams }) {
+    console.debug("handleAddedOrUpdatedLoco", payload);
+    yield put(addOrUpdateLoco(payload))
+}
+
 function* commandSaga() {
     yield takeEvery(commandReceived.type, handleCommandReceived);
     yield takeEvery(commandParsedSuccess.type, handleParsedCommand)
     yield takeEvery(commandSend.type, handleCommandSend)
     yield takeLatest(setCommunicationsWriter.type, handleSetCommunicationsWriter)
     yield takeEvery(rosterItemCommandParsed.type, handleRosterItemCommandParsed)
+    yield takeEvery(rosterItemUpdated.type, handleAddedOrUpdatedLoco)
+    yield takeEvery(newLocoFormSubmit.type, handleAddedOrUpdatedLoco)
 }
 
 export default commandSaga;

@@ -17,7 +17,7 @@ export const LocosListItem = ({loco}: LocosListItemProps) => {
                 Item Sync: {loco.sync.rosterItemAt}
             </div>
             <div>
-                {Object.values(loco.functionButtons).map((button: FunctionButton) => <p>{button.display}</p>)}
+                {Object.entries(loco.functionButtons).map(([name, button]) => <p key={name}>{button.display}</p>)}
             </div>
         </li>
     )
