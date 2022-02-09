@@ -1,4 +1,5 @@
 import {
+    emergencyStopCommand,
     FunctionName,
     genericParser,
     ParserResult,
@@ -6,7 +7,7 @@ import {
     throttleCommand
 } from "@cloudthrottle/dcc-ex--commands";
 import {call, put, takeEvery, takeLatest} from 'redux-saga/effects'
-import {AddLocoParams, Loco, ThrottleState, Writer} from "../types";
+import {AddLocoParams, Loco, Locos, ThrottleState, Writer} from "../types";
 import {
     commandParsedFailed,
     commandParsedSuccess,
@@ -19,10 +20,14 @@ import {
 import {communicationsConnected, communicationsDisconnected, setCommunicationsWriter} from "./actions/communications";
 import {addOrUpdateLoco, newLocoFormSubmit, rosterItemUpdated} from "./actions/locos";
 import {
+    createEmergencyStopCommand,
     createThrottleCommand,
     updateThrottleState,
     userChangedDirection,
     userChangedSpeed,
+    userEmergencyStop,
+    userEmergencyStopLoco,
+    userStopLoco,
     userUpdateThrottleState
 } from "./actions/throttles";
 
@@ -99,6 +104,39 @@ function* handleUserChangedDirection({payload}: { type: string, payload: { loco:
     }))
 }
 
+function* handleEmergencyStopLoco({payload}: { type: string, payload: { loco: Loco } }) {
+    console.debug("handleEmergencyStopLoco", payload);
+    yield put(userChangedSpeed({
+        loco: payload.loco,
+        speed: -1
+    }))
+}
+
+function* handleUserEmergencyStop({payload}: { type: string, payload: { locos: Locos } }) {
+    console.debug("handleUserEmergencyStop", payload);
+
+    for (const loco of Object.values(payload.locos)) {
+        yield put(updateThrottleState({
+            loco,
+            throttle: {
+                ...loco.throttle,
+                speed: -1
+            }
+        }))
+    }
+
+
+    yield put(createEmergencyStopCommand())
+}
+
+function* handleStopLoco({payload}: { type: string, payload: { loco: Loco } }) {
+    console.debug("handleStopLoco", payload);
+    yield put(userChangedSpeed({
+        loco: payload.loco,
+        speed: 0
+    }))
+}
+
 function* handleUserUpdateThrottleState({payload}: { type: string, payload: { loco: Loco, throttle: Partial<ThrottleState> } }) {
     console.debug("handleUserUpdateThrottleState", payload);
     yield put(updateThrottleState(payload))
@@ -123,6 +161,13 @@ function* handleCreateThrottleCommand({payload}: { type: string, payload: { loco
     yield put(commandSend(command))
 }
 
+function* handleCreateEmergencyStopCommand() {
+    console.debug("handleCreateEmergencyStopCommand");
+
+    const command = emergencyStopCommand()
+    yield put(commandSend(command))
+}
+
 function* commandSaga() {
     yield takeEvery(commandReceived.type, handleCommandReceived);
     yield takeEvery(commandParsedSuccess.type, handleParsedCommand)
@@ -133,8 +178,12 @@ function* commandSaga() {
     yield takeEvery(newLocoFormSubmit.type, handleAddedOrUpdatedLoco)
     yield takeEvery(userChangedSpeed.type, handleUserChangedSpeed)
     yield takeEvery(userChangedDirection.type, handleUserChangedDirection)
+    yield takeEvery(userStopLoco.type, handleStopLoco)
+    yield takeEvery(userEmergencyStopLoco.type, handleEmergencyStopLoco)
     yield takeEvery(userUpdateThrottleState.type, handleUserUpdateThrottleState)
     yield takeEvery(createThrottleCommand.type, handleCreateThrottleCommand)
+    yield takeEvery(createEmergencyStopCommand.type, handleCreateEmergencyStopCommand)
+    yield takeEvery(userEmergencyStop.type, handleUserEmergencyStop)
 }
 
 export default commandSaga;

@@ -1,9 +1,14 @@
 import {Loco} from "../../types";
-import {sendLog, setButtonValue, setSpeed} from "../../states";
+import {sendLog, setButtonValue} from "../../states";
 import React, {SyntheticEvent} from "react";
-import {cabCommand, Direction, throttleCommand} from "@cloudthrottle/dcc-ex--commands";
+import {cabCommand, Direction} from "@cloudthrottle/dcc-ex--commands";
 import {useDispatch} from "react-redux";
-import {userChangedDirection, userChangedSpeed} from "../../states/actions/throttles";
+import {
+    userChangedDirection,
+    userChangedSpeed,
+    userEmergencyStopLoco,
+    userStopLoco
+} from "../../states/actions/throttles";
 
 type ThrottleProps = {
     loco: Loco
@@ -55,32 +60,14 @@ export const Throttle = ({loco}: ThrottleProps) => {
         console.debug("handleStopSubmit")
         event.preventDefault()
 
-        const message = throttleCommand({
-            ...loco.throttle,
-            cab: loco.cabId,
-            speed: 0,
-        })
-
-        // Updated the Speed attribute
-        dispatch(setSpeed({loco, speed: 0}))
-        // Send Command
-        dispatch(sendLog(message))
+        dispatch(userStopLoco({loco}))
     };
 
     const handleEStopSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         console.debug("handleEStopSubmit")
         event.preventDefault()
 
-        const message = throttleCommand({
-            ...loco.throttle,
-            cab: loco.cabId,
-            speed: -1,
-        })
-
-        // Updated the Speed attribute
-        dispatch(setSpeed({loco, speed: -1}))
-        // Send Command
-        dispatch(sendLog(message))
+        dispatch(userEmergencyStopLoco({loco}))
     };
 
     const handleDirectionChange = (event: React.FormEvent<HTMLFormElement>) => {

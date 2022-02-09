@@ -16,7 +16,7 @@ export const Throttles = () => {
         <>
             <div className="global-controls">
                 <Powers/>
-                <EStop/>
+                <EStop locos={locos}/>
             </div>
             {locos.map((loco, index) => <Throttle key={index} loco={loco}/>)}
         </>
