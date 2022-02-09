@@ -1,7 +1,8 @@
 import {createReducer} from "@reduxjs/toolkit";
 import {LocosState} from "../../types";
 import {buildLoco, mergeLoco} from "../../repositories/locos";
-import {addOrUpdateLoco, rosterItemUpdated} from "../actions/locos";
+import {addOrUpdateLoco} from "../actions/locos";
+import {updateThrottleState} from "../actions/throttles";
 
 const initialState: LocosState = {
     entities: {}
@@ -16,6 +17,14 @@ export const rostersReducer = createReducer(initialState, builder => {
             state.entities[cabId] = mergeLoco({loco: payload, existingLoco})
         } else {
             state.entities[cabId] = buildLoco(payload)
+        }
+    })
+    builder.addCase(updateThrottleState, (state, {payload}) => {
+        const {loco: {cabId}, throttle} = payload
+        const {throttle: existingLocoThrottle} = state.entities[cabId]
+        state.entities[cabId].throttle = {
+            ...existingLocoThrottle,
+            ...throttle
         }
     })
 })

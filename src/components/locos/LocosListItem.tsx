@@ -1,6 +1,5 @@
 import React from "react";
 import {Loco} from "../../types";
-import {FunctionButton} from "@cloudthrottle/dcc-ex--commands";
 
 type LocosListItemProps = {
     loco: Loco

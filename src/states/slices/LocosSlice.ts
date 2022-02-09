@@ -1,7 +1,6 @@
 import {createSlice, Draft, PayloadAction} from '@reduxjs/toolkit'
-import {AddLocoParams, Loco, LocosState} from "../../types";
+import {Loco, LocosState} from "../../types";
 import {BitValue} from "@cloudthrottle/dcc-ex--commands";
-import {buildFunctionButtons, buildLoco, updateOrAddLoco, updateOrAddRosterLoco} from "../../repositories/locos";
 
 const initialState: LocosState = {
     entities: {}
