@@ -5,7 +5,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {rosterCommand} from "@cloudthrottle/dcc-ex--commands";
 
 export const LocosIndex = () => {
-    const locos = useSelector((state: RootState) => state.locos.entities)
+    const locos = useSelector((state: RootState) => state.roster.entities)
     const dispatch = useDispatch()
 
     const handlePopulateSubmit = (event: React.FormEvent<HTMLFormElement>) => {

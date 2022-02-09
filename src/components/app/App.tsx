@@ -6,6 +6,7 @@ import {RootState, setWriter} from "../../states";
 import {createSerialConnection} from "@cloudthrottle/dcc-ex--serial-communicator";
 import {useDispatch, useSelector} from "react-redux";
 import {readHandler} from "../../utils";
+import {setCommunicationsWriter} from "../../states/actions";
 
 export const App = () => {
     const dispatch = useDispatch()
@@ -16,7 +17,7 @@ export const App = () => {
         event.preventDefault()
         try {
             const {writer} = await createSerialConnection({readHandler: handleRead});
-            dispatch(setWriter(writer))
+            dispatch(setCommunicationsWriter(writer))
         } catch (e) {
             console.debug(e)
             return

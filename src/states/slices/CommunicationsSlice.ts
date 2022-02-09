@@ -1,5 +1,6 @@
 import {createSlice, Draft, PayloadAction} from '@reduxjs/toolkit'
 import {CommunicationsState, LogItem, Writer} from "../../types";
+import {commandSend} from "../actions";
 
 
 const initialState: CommunicationsState = {
@@ -21,7 +22,7 @@ export const communicationsSlice = createSlice({
     name: 'communications',
     initialState,
     reducers: {
-        addLog: (state: Draft<CommunicationsState>, action: PayloadAction<LogItem>) => {
+        [commandSend.type]: (state: Draft<CommunicationsState>, action: PayloadAction<LogItem>) => {
             state.logs = [action.payload, ...state.logs]
         },
         setWriter: (state, action) => {
