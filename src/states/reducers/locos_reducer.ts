@@ -27,4 +27,12 @@ export const rostersReducer = createReducer(initialState, builder => {
             ...throttle
         }
     })
+    // builder.addCase(updateFunctionButtonState, (state, {payload}) => {
+    // const {loco: {cabId}, functionButton} = payload
+    // const {throttle: existingLocoThrottle} = state.entities[cabId]
+    // state.entities[cabId].throttle = {
+    //     ...existingLocoThrottle,
+    //     ...throttle
+    // }
+    // })
 })

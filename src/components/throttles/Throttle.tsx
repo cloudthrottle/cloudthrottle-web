@@ -1,9 +1,9 @@
 import {Loco} from "../../types";
-import {sendLog, setButtonValue} from "../../states";
 import React, {SyntheticEvent} from "react";
-import {cabCommand, Direction} from "@cloudthrottle/dcc-ex--commands";
+import {Direction} from "@cloudthrottle/dcc-ex--commands";
 import {useDispatch} from "react-redux";
 import {
+    userChangedButtonValue,
     userChangedDirection,
     userChangedSpeed,
     userEmergencyStopLoco,
@@ -28,17 +28,24 @@ export const Throttle = ({loco}: ThrottleProps) => {
 
         const name = parseInt(nameValue)
         const value = parseInt(valueValue) === 0 ? 1 : 0;
-        const message = cabCommand({
-            cab: loco.cabId,
-            value,
-            func: name
-        })
 
-        // Toggle the Button value attribute
-        dispatch(setButtonValue({loco, name, value}))
+        dispatch(userChangedButtonValue({
+            loco,
+            name,
+            value
+        }))
 
-        // Send Command
-        dispatch(sendLog(message))
+        // const message = cabCommand({
+        //     cab: loco.cabId,
+        //     value,
+        //     func: name
+        // })
+        //
+        // // Toggle the Button value attribute
+        // dispatch(setButtonValue({loco, name, value}))
+        //
+        // // Send Command
+        // dispatch(sendLog(message))
     };
 
     const handleSpeedChange = (event: React.FormEvent<HTMLInputElement>) => {

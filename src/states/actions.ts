@@ -1,4 +1,5 @@
 import {
+    BitValue,
     emergencyStopCommand,
     FunctionName,
     genericParser,
@@ -23,6 +24,7 @@ import {
     createEmergencyStopCommand,
     createThrottleCommand,
     updateThrottleState,
+    userChangedButtonValue,
     userChangedDirection,
     userChangedSpeed,
     userEmergencyStop,
@@ -92,6 +94,13 @@ function* handleUserChangedSpeed({payload}: { type: string, payload: { loco: Loc
             speed: payload.speed
         }
     }))
+}
+
+function* handleUserChangedFunctionButtonValue({payload}: { type: string, payload: { loco: Loco, name: number, value: BitValue } }) {
+    console.debug("handleUserChangedFunctionButtonValue", payload);
+    // yield put(userUpdateFunctionButtonState({
+    //     loco: payload.loco,
+    // }))
 }
 
 function* handleUserChangedDirection({payload}: { type: string, payload: { loco: Loco, direction: number } }) {
@@ -184,6 +193,7 @@ function* commandSaga() {
     yield takeEvery(createThrottleCommand.type, handleCreateThrottleCommand)
     yield takeEvery(createEmergencyStopCommand.type, handleCreateEmergencyStopCommand)
     yield takeEvery(userEmergencyStop.type, handleUserEmergencyStop)
+    yield takeEvery(userChangedButtonValue.type, handleUserChangedFunctionButtonValue)
 }
 
 export default commandSaga;
