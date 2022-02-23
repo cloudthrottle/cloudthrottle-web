@@ -2,7 +2,7 @@ import {createReducer} from "@reduxjs/toolkit";
 import {LocosState} from "../../types";
 import {buildLoco, mergeLoco} from "../../repositories/locos";
 import {addOrUpdateLoco} from "../actions/locos";
-import {updateThrottleState} from "../actions/throttles";
+import {updateFunctionButtonState, updateThrottleState} from "../actions/throttles";
 
 const initialState: LocosState = {
     entities: {}
@@ -27,12 +27,14 @@ export const rostersReducer = createReducer(initialState, builder => {
             ...throttle
         }
     })
-    // builder.addCase(updateFunctionButtonState, (state, {payload}) => {
-    // const {loco: {cabId}, functionButton} = payload
-    // const {throttle: existingLocoThrottle} = state.entities[cabId]
-    // state.entities[cabId].throttle = {
-    //     ...existingLocoThrottle,
-    //     ...throttle
-    // }
-    // })
+    builder.addCase(updateFunctionButtonState, (state, {payload}) => {
+        const {loco: {cabId}, functionButtons} = payload
+        Object.entries(functionButtons).forEach(([name, button]) => {
+            const currentButton = state.entities[cabId].functionButtons[parseInt(name)]
+            state.entities[cabId].functionButtons[parseInt(name)] = {
+                ...currentButton,
+                ...button
+            }
+        })
+    })
 })

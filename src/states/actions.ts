@@ -1,5 +1,6 @@
 import {
     BitValue,
+    cabCommand,
     emergencyStopCommand,
     FunctionName,
     genericParser,
@@ -8,7 +9,7 @@ import {
     throttleCommand
 } from "@cloudthrottle/dcc-ex--commands";
 import {call, put, takeEvery, takeLatest} from 'redux-saga/effects'
-import {AddLocoParams, Loco, Locos, ThrottleState, Writer} from "../types";
+import {AddLocoParams, Loco, Locos, PartialFunctionButtons, ThrottleState, Writer} from "../types";
 import {
     commandParsedFailed,
     commandParsedSuccess,
@@ -21,8 +22,10 @@ import {
 import {communicationsConnected, communicationsDisconnected, setCommunicationsWriter} from "./actions/communications";
 import {addOrUpdateLoco, newLocoFormSubmit, rosterItemUpdated} from "./actions/locos";
 import {
+    createCabCommand,
     createEmergencyStopCommand,
     createThrottleCommand,
+    updateFunctionButtonState,
     updateThrottleState,
     userChangedButtonValue,
     userChangedDirection,
@@ -30,6 +33,7 @@ import {
     userEmergencyStop,
     userEmergencyStopLoco,
     userStopLoco,
+    userUpdateFunctionButtonState,
     userUpdateThrottleState
 } from "./actions/throttles";
 
@@ -98,9 +102,29 @@ function* handleUserChangedSpeed({payload}: { type: string, payload: { loco: Loc
 
 function* handleUserChangedFunctionButtonValue({payload}: { type: string, payload: { loco: Loco, name: number, value: BitValue } }) {
     console.debug("handleUserChangedFunctionButtonValue", payload);
-    // yield put(userUpdateFunctionButtonState({
-    //     loco: payload.loco,
-    // }))
+    const functionButtons: PartialFunctionButtons = {
+        [payload.name]: {
+            value: payload.value
+        }
+    }
+
+    yield put(userUpdateFunctionButtonState({
+        loco: payload.loco,
+        functionButtons
+    }))
+}
+
+function* handleUserUpdateFunctionButtonValue({payload}: { type: string, payload: { loco: Loco, functionButtons: PartialFunctionButtons } }) {
+    console.debug("handleUserUpdateFunctionButtonValue", payload);
+
+    yield put(updateFunctionButtonState({
+        loco: payload.loco,
+        functionButtons: payload.functionButtons
+    }))
+    yield put(createCabCommand({
+        loco: payload.loco,
+        functionButtons: payload.functionButtons
+    }))
 }
 
 function* handleUserChangedDirection({payload}: { type: string, payload: { loco: Loco, direction: number } }) {
@@ -170,6 +194,23 @@ function* handleCreateThrottleCommand({payload}: { type: string, payload: { loco
     yield put(commandSend(command))
 }
 
+function* handleCreateCabCommand({payload}: { type: string, payload: { loco: Loco, functionButtons: PartialFunctionButtons } }) {
+    console.debug("handleCreateCabCommand", payload);
+    const {loco, functionButtons} = payload
+
+    const commands = Object.entries(functionButtons).map(([name, button]) => {
+        const command = cabCommand({
+            cab: loco.cabId,
+            func: parseInt(name),
+            value: button.value
+        })
+
+        return put(commandSend(command))
+    })
+
+    yield* commands
+}
+
 function* handleCreateEmergencyStopCommand() {
     console.debug("handleCreateEmergencyStopCommand");
 
@@ -191,9 +232,11 @@ function* commandSaga() {
     yield takeEvery(userEmergencyStopLoco.type, handleEmergencyStopLoco)
     yield takeEvery(userUpdateThrottleState.type, handleUserUpdateThrottleState)
     yield takeEvery(createThrottleCommand.type, handleCreateThrottleCommand)
+    yield takeEvery(createCabCommand.type, handleCreateCabCommand)
     yield takeEvery(createEmergencyStopCommand.type, handleCreateEmergencyStopCommand)
     yield takeEvery(userEmergencyStop.type, handleUserEmergencyStop)
     yield takeEvery(userChangedButtonValue.type, handleUserChangedFunctionButtonValue)
+    yield takeEvery(userUpdateFunctionButtonState.type, handleUserUpdateFunctionButtonValue)
 }
 
 export default commandSaga;
