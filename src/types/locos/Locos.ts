@@ -20,6 +20,15 @@ export type Loco = {
     sync: LocoSync
 }
 
+export type PartialLoco = {
+    id: string,
+    name: string,
+    cabId: number
+    throttle: Partial<ThrottleState>
+    functionButtons: PartialFunctionButtons,
+    sync: Partial<LocoSync>
+}
+
 export type Locos = {
     [cabId: number]: Loco
 }
@@ -31,8 +40,4 @@ export type ThrottleState = {
 
 export type PartialFunctionButtons = FunctionButtons<Partial<FunctionButton>>;
 
-export type AddLocoParams = {
-    name: string,
-    cabId: number,
-    buttons: PartialFunctionButtons
-}
+export type AddLocoParams = Partial<PartialLoco> & Pick<PartialLoco, 'cabId' | 'name'>

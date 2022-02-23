@@ -1,6 +1,5 @@
 import React from "react";
 import {Loco} from "../../types";
-import {FunctionButton} from "@cloudthrottle/dcc-ex--commands";
 
 type LocosListItemProps = {
     loco: Loco
@@ -8,17 +7,14 @@ type LocosListItemProps = {
 
 export const LocosListItem = ({loco}: LocosListItemProps) => {
     return (
-        <li id={`loco_${loco.id}`}>
-            <div>{loco.cabId}: {loco.name}</div>
-            <div>
+        <li id={`loco_${loco.cabId}`}>
+            <h3><strong>{loco.cabId}:</strong> {loco.name}</h3>
+            <p>
                 List Sync: {loco.sync.rosterListAt}
-            </div>
-            <div>
+            </p>
+            <p>
                 Item Sync: {loco.sync.rosterItemAt}
-            </div>
-            <div>
-                {Object.values(loco.functionButtons).map((button: FunctionButton) => <p>{button.display}</p>)}
-            </div>
+            </p>
         </li>
     )
 }

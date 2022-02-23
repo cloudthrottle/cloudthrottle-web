@@ -1,11 +1,12 @@
 import React, {FormEvent} from 'react';
 import './App.css';
-import {Link, Route, Routes} from "react-router-dom";
+import {NavLink, Route, Routes} from "react-router-dom";
 import {CommunicationsPage, LocosPage, ThrottlesPage} from "../../pages";
-import {RootState, setWriter} from "../../states";
+import {RootState} from "../../states";
 import {createSerialConnection} from "@cloudthrottle/dcc-ex--serial-communicator";
 import {useDispatch, useSelector} from "react-redux";
 import {readHandler} from "../../utils";
+import {setCommunicationsWriter} from "../../states/actions/communications";
 
 export const App = () => {
     const dispatch = useDispatch()
@@ -16,7 +17,7 @@ export const App = () => {
         event.preventDefault()
         try {
             const {writer} = await createSerialConnection({readHandler: handleRead});
-            dispatch(setWriter(writer))
+            dispatch(setCommunicationsWriter(writer))
         } catch (e) {
             console.debug(e)
             return
@@ -29,9 +30,9 @@ export const App = () => {
                 <h1>Cloud Throttle {connected ? "🟢" : "🔴"}</h1>
                 <div className="nav-bar">
                     <nav>
-                        <Link to="/communications">Comms</Link>
-                        <Link to="/locos">Locos</Link>
-                        <Link to="/throttles">Throttles</Link>
+                        <NavLink to="/communications">Comms</NavLink>
+                        <NavLink to="/locos">Locos</NavLink>
+                        <NavLink to="/throttles">Throttles</NavLink>
                     </nav>
                     <form action="/communications/connect" method="post" onSubmit={handleConnectionRequestSubmit}>
                         <button type="submit">Connect</button>

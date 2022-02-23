@@ -1,9 +1,8 @@
 import React, {FormEvent} from 'react'
 import {FakeReadCommsForm, SendCommsForm} from "../../../components";
-import {sendLog} from "../../../states";
 import {useDispatch} from "react-redux";
 import {HandleSubmit} from "../../../types";
-import {readHandler} from "../../../utils";
+import {commandReceived, commandSend} from "../../../states/actions/commands";
 
 export const CommunicationsForm = () => {
     const dispatch = useDispatch()
@@ -18,7 +17,7 @@ export const CommunicationsForm = () => {
             return
         }
 
-        dispatch(sendLog(command.toString()))
+        dispatch(commandSend(command.toString()))
 
         // @ts-ignore
         target.reset()
@@ -34,8 +33,7 @@ export const CommunicationsForm = () => {
             return
         }
 
-        const handleRead = readHandler(dispatch);
-        handleRead(command.toString())
+        dispatch(commandReceived(command.toString()))
 
         // @ts-ignore
         target.reset()
