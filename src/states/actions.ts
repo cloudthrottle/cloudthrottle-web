@@ -4,7 +4,7 @@ import {
     emergencyStopCommand,
     FunctionName,
     genericParser,
-    ParserResult, powerCommand,
+    ParserResult, powerCommand, rosterCommand,
     RosterItemResult,
     throttleCommand
 } from "@cloudthrottle/dcc-ex--commands";
@@ -20,7 +20,13 @@ import {
     throttleCommandParsed
 } from "./actions/commands";
 import {communicationsConnected, communicationsDisconnected, setCommunicationsWriter} from "./actions/communications";
-import {addOrUpdateLoco, newLocoFormSubmit, rosterItemUpdated} from "./actions/locos";
+import {
+    addOrUpdateLoco,
+    createRosterCommand,
+    newLocoFormSubmit,
+    rosterItemUpdated,
+    userPopulateRoster
+} from "./actions/locos";
 import {
     createCabCommand,
     createEmergencyStopCommand,
@@ -235,6 +241,18 @@ function* handleCreateEmergencyStopCommand() {
     yield put(commandSend(command))
 }
 
+function* handlePopulateRoster() {
+    console.debug("handlePopulateRoster");
+    yield put(createRosterCommand())
+}
+
+function* handleCreateRosterCommand() {
+    console.debug("handleCreateRosterCommand");
+
+    const command = rosterCommand()
+    yield put(commandSend(command))
+}
+
 function* commandSaga() {
     yield takeEvery(commandReceived.type, handleCommandReceived);
     yield takeEvery(commandParsedSuccess.type, handleParsedCommand)
@@ -256,6 +274,8 @@ function* commandSaga() {
     yield takeEvery(userUpdateFunctionButtonState.type, handleUserUpdateFunctionButtonValue)
     yield takeEvery(userChangedPower.type, handleUserChangedPower)
     yield takeEvery(createPowerCommand.type, handleCreatePowerCommand)
+    yield takeEvery(userPopulateRoster.type, handlePopulateRoster)
+    yield takeEvery(createRosterCommand.type, handleCreateRosterCommand)
 }
 
 export default commandSaga;
