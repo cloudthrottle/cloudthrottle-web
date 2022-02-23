@@ -4,7 +4,7 @@ import {
     emergencyStopCommand,
     FunctionName,
     genericParser,
-    ParserResult,
+    ParserResult, powerCommand,
     RosterItemResult,
     throttleCommand
 } from "@cloudthrottle/dcc-ex--commands";
@@ -36,6 +36,7 @@ import {
     userUpdateFunctionButtonState,
     userUpdateThrottleState
 } from "./actions/throttles";
+import {createPowerCommand, updatePowerState, userChangedPower} from "./actions/powers";
 
 function* handleParsedCommand({payload}: { type: string, payload: ParserResult<any> }) {
     console.debug("handleParsedCommand", payload);
@@ -162,6 +163,13 @@ function* handleUserEmergencyStop({payload}: { type: string, payload: { locos: L
     yield put(createEmergencyStopCommand())
 }
 
+function* handleUserChangedPower({payload}: { type: string, payload: BitValue }) {
+    console.debug("handleUserChangedPower", payload);
+
+    yield put(updatePowerState(payload))
+    yield put(createPowerCommand(payload))
+}
+
 function* handleStopLoco({payload}: { type: string, payload: { loco: Loco } }) {
     console.debug("handleStopLoco", payload);
     yield put(userChangedSpeed({
@@ -190,6 +198,15 @@ function* handleCreateThrottleCommand({payload}: { type: string, payload: { loco
     const command = throttleCommand({
         ...newThrottle,
         cab: loco.cabId,
+    })
+    yield put(commandSend(command))
+}
+
+function* handleCreatePowerCommand({payload}: { type: string, payload: BitValue }) {
+    console.debug("handleCreatePowerCommand", payload);
+
+    const command = powerCommand({
+        power: payload
     })
     yield put(commandSend(command))
 }
@@ -237,6 +254,8 @@ function* commandSaga() {
     yield takeEvery(userEmergencyStop.type, handleUserEmergencyStop)
     yield takeEvery(userChangedButtonValue.type, handleUserChangedFunctionButtonValue)
     yield takeEvery(userUpdateFunctionButtonState.type, handleUserUpdateFunctionButtonValue)
+    yield takeEvery(userChangedPower.type, handleUserChangedPower)
+    yield takeEvery(createPowerCommand.type, handleCreatePowerCommand)
 }
 
 export default commandSaga;

@@ -1,16 +1,14 @@
 import {configureStore} from '@reduxjs/toolkit'
-import powersReducer from "./slices/PowerSlice";
 import createSagaMiddleware from 'redux-saga';
 import commandSaga from "./actions";
 import {commandReducer} from "./reducers/command_reducer";
 import {rostersReducer} from "./reducers/locos_reducer";
+import {powersReducer} from "./reducers/power_reducer";
 
 const sagaMiddleware = createSagaMiddleware()
 
 export const store = configureStore({
     reducer: {
-        // locos: locosReducer,
-        // communications: communicationsReducer,
         powers: powersReducer,
         communications: commandReducer,
         roster: rostersReducer

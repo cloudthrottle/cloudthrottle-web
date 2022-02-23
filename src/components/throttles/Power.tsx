@@ -1,7 +1,8 @@
 import {useDispatch, useSelector} from "react-redux";
-import {RootState, sendLog, setAllPower} from "../../states";
+import {RootState} from "../../states";
 import React from "react";
-import {BitValue, powerCommand} from "@cloudthrottle/dcc-ex--commands";
+import {BitValue} from "@cloudthrottle/dcc-ex--commands";
+import {userChangedPower} from "../../states/actions/powers";
 
 export const Powers = () => {
     const powers = useSelector((state: RootState) => state.powers)
@@ -19,12 +20,7 @@ export const Powers = () => {
         }
         const power = parseInt(powerValue) as BitValue
 
-        const message = powerCommand({power})
-
-        // Updated the Direction attribute
-        dispatch(setAllPower(power))
-        // Send Command
-        dispatch(sendLog(message))
+        dispatch(userChangedPower(power))
     };
 
     return (
