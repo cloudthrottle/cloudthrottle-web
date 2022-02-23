@@ -1,16 +1,17 @@
 import React from "react"
-import {Link, Route, Routes} from "react-router-dom"
+import {Route, Routes} from "react-router-dom"
 import {LocosIndex} from "./index/LocosIndex";
 import {LocosForm} from "./form/LocosForm";
 import {Paths} from "../../types";
+import {ActiveLink} from "../../components";
 
 export const LocosPage = () => {
     return (
         <div>
             <h2>Locos</h2>
             <nav>
-                <Link to={Paths.INDEX} key={"locos"}>Locos</Link>
-                <Link to={Paths.NEW} key={"locosNew"}>Add Loco</Link>
+                <ActiveLink to={Paths.INDEX} key={"locos"}>Locos</ActiveLink>
+                <ActiveLink to={Paths.NEW} key={"locosNew"}>Add Loco</ActiveLink>
             </nav>
 
             <Routes>

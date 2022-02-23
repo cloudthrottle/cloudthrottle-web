@@ -7,17 +7,14 @@ type LocosListItemProps = {
 
 export const LocosListItem = ({loco}: LocosListItemProps) => {
     return (
-        <li id={`loco_${loco.id}`}>
-            <div>{loco.cabId}: {loco.name}</div>
-            <div>
+        <li id={`loco_${loco.cabId}`}>
+            <h3><strong>{loco.cabId}:</strong> {loco.name}</h3>
+            <p>
                 List Sync: {loco.sync.rosterListAt}
-            </div>
-            <div>
+            </p>
+            <p>
                 Item Sync: {loco.sync.rosterItemAt}
-            </div>
-            <div>
-                {Object.entries(loco.functionButtons).map(([name, button]) => <p key={name}>{button.display}</p>)}
-            </div>
+            </p>
         </li>
     )
 }

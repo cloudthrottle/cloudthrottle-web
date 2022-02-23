@@ -1,6 +1,6 @@
 import React, {FormEvent} from 'react';
 import './App.css';
-import {Link, Route, Routes} from "react-router-dom";
+import {NavLink, Route, Routes} from "react-router-dom";
 import {CommunicationsPage, LocosPage, ThrottlesPage} from "../../pages";
 import {RootState} from "../../states";
 import {createSerialConnection} from "@cloudthrottle/dcc-ex--serial-communicator";
@@ -30,9 +30,9 @@ export const App = () => {
                 <h1>Cloud Throttle {connected ? "🟢" : "🔴"}</h1>
                 <div className="nav-bar">
                     <nav>
-                        <Link to="/communications">Comms</Link>
-                        <Link to="/locos">Locos</Link>
-                        <Link to="/throttles">Throttles</Link>
+                        <NavLink to="/communications">Comms</NavLink>
+                        <NavLink to="/locos">Locos</NavLink>
+                        <NavLink to="/throttles">Throttles</NavLink>
                     </nav>
                     <form action="/communications/connect" method="post" onSubmit={handleConnectionRequestSubmit}>
                         <button type="submit">Connect</button>
