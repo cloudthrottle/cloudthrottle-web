@@ -6,7 +6,14 @@ interface CommunicationsLogProps {
 }
 
 export const CommunicationsLog = ({log}: CommunicationsLogProps) => {
+    const createdAt = new Date(log.timestamps.createdAt)
+
     return (
-        <li><span><strong>{log.kind}:</strong></span> {log.message}</li>
+      <details>
+          <summary>
+              <strong>{log.kind}:</strong> {log.message}
+          </summary>
+          <small>{createdAt.toLocaleString()}</small>
+      </details>
     )
 }

@@ -25,6 +25,12 @@ nav a.active {
     align-items: baseline;
 }
 
+.nav-bar .actions {
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+}
+
 .comms-forms {
     display: flex;
     gap: 2rem

@@ -3,22 +3,24 @@ import {LocosState} from "../../types";
 import {buildLoco, mergeLoco} from "../../repositories/locos";
 import {addOrUpdateLoco} from "../actions/locos";
 import {updateFunctionButtonState, updateThrottleState} from "../actions/throttles";
+import {userResetState} from "../actions/stores";
 
 const initialState: LocosState = {
     entities: {}
 }
 
 export const rostersReducer = createReducer(initialState, builder => {
-    builder.addCase(addOrUpdateLoco, (state, {payload}) => {
-        const {cabId} = payload
+  builder.addCase(userResetState, () => initialState)
+  builder.addCase(addOrUpdateLoco, (state, {payload}) => {
+    const {cabId} = payload
 
-        if (state.entities.hasOwnProperty(cabId)) {
-            const existingLoco = state.entities[cabId]
-            state.entities[cabId] = mergeLoco({loco: payload, existingLoco})
-        } else {
-            state.entities[cabId] = buildLoco(payload)
-        }
-    })
+    if (state.entities.hasOwnProperty(cabId)) {
+      const existingLoco = state.entities[cabId]
+      state.entities[cabId] = mergeLoco({loco: payload, existingLoco})
+    } else {
+      state.entities[cabId] = buildLoco(payload)
+    }
+  })
     builder.addCase(updateThrottleState, (state, {payload}) => {
         const {loco: {cabId}, throttle} = payload
         const {throttle: existingLocoThrottle} = state.entities[cabId]

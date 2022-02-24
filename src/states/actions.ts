@@ -1,48 +1,51 @@
 import {
-    BitValue,
-    cabCommand,
-    emergencyStopCommand,
-    FunctionName,
-    genericParser,
-    ParserResult, powerCommand, rosterCommand,
-    RosterItemResult,
-    throttleCommand
+  BitValue,
+  cabCommand,
+  emergencyStopCommand,
+  FunctionName,
+  genericParser,
+  ParserResult,
+  powerCommand,
+  rosterCommand,
+  RosterItemResult,
+  throttleCommand
 } from "@cloudthrottle/dcc-ex--commands";
 import {call, put, takeEvery, takeLatest} from 'redux-saga/effects'
 import {AddLocoParams, Loco, Locos, PartialFunctionButtons, ThrottleState, Writer} from "../types";
 import {
-    commandParsedFailed,
-    commandParsedSuccess,
-    commandReceived,
-    commandSend,
-    commandWrite,
-    rosterItemCommandParsed,
-    throttleCommandParsed
+  commandParsedFailed,
+  commandParsedSuccess,
+  commandReceived,
+  commandSend,
+  commandWrite,
+  rosterItemCommandParsed,
+  throttleCommandParsed
 } from "./actions/commands";
 import {communicationsConnected, communicationsDisconnected, setCommunicationsWriter} from "./actions/communications";
 import {
-    addOrUpdateLoco,
-    createRosterCommand,
-    newLocoFormSubmit,
-    rosterItemUpdated,
-    userPopulateRoster
+  addOrUpdateLoco,
+  createRosterCommand,
+  newLocoFormSubmit,
+  rosterItemUpdated,
+  userPopulateRoster
 } from "./actions/locos";
 import {
-    createCabCommand,
-    createEmergencyStopCommand,
-    createThrottleCommand,
-    updateFunctionButtonState,
-    updateThrottleState,
-    userChangedButtonValue,
-    userChangedDirection,
-    userChangedSpeed,
-    userEmergencyStop,
-    userEmergencyStopLoco,
-    userStopLoco,
-    userUpdateFunctionButtonState,
-    userUpdateThrottleState
+  createCabCommand,
+  createEmergencyStopCommand,
+  createThrottleCommand,
+  updateFunctionButtonState,
+  updateThrottleState,
+  userChangedButtonValue,
+  userChangedDirection,
+  userChangedSpeed,
+  userEmergencyStop,
+  userEmergencyStopLoco,
+  userStopLoco,
+  userUpdateFunctionButtonState,
+  userUpdateThrottleState
 } from "./actions/throttles";
 import {createPowerCommand, updatePowerState, userChangedPower} from "./actions/powers";
+import {userClearLocalStorage, userResetAndClearData, userResetState} from "./actions/stores";
 
 function* handleParsedCommand({payload}: { type: string, payload: ParserResult<any> }) {
     console.debug("handleParsedCommand", payload);
@@ -243,25 +246,30 @@ function* handleCreateEmergencyStopCommand() {
 
 function* handlePopulateRoster() {
     console.debug("handlePopulateRoster");
-    yield put(createRosterCommand())
+  yield put(createRosterCommand())
 }
 
 function* handleCreateRosterCommand() {
-    console.debug("handleCreateRosterCommand");
+  console.debug("handleCreateRosterCommand");
 
-    const command = rosterCommand()
-    yield put(commandSend(command))
+  const command = rosterCommand()
+  yield put(commandSend(command))
+}
+
+function* handleUserResetAndClearData() {
+  console.debug("handleUserResetAndClearData");
+  yield* [put(userResetState()), put(userClearLocalStorage())]
 }
 
 function* commandSaga() {
-    yield takeEvery(commandReceived.type, handleCommandReceived);
-    yield takeEvery(commandParsedSuccess.type, handleParsedCommand)
-    yield takeEvery(commandSend.type, handleCommandSend)
-    yield takeLatest(setCommunicationsWriter.type, handleSetCommunicationsWriter)
-    yield takeEvery(rosterItemCommandParsed.type, handleRosterItemCommandParsed)
-    yield takeEvery(rosterItemUpdated.type, handleAddedOrUpdatedLoco)
-    yield takeEvery(newLocoFormSubmit.type, handleAddedOrUpdatedLoco)
-    yield takeEvery(userChangedSpeed.type, handleUserChangedSpeed)
+  yield takeEvery(commandReceived.type, handleCommandReceived);
+  yield takeEvery(commandParsedSuccess.type, handleParsedCommand)
+  yield takeEvery(commandSend.type, handleCommandSend)
+  yield takeLatest(setCommunicationsWriter.type, handleSetCommunicationsWriter)
+  yield takeEvery(rosterItemCommandParsed.type, handleRosterItemCommandParsed)
+  yield takeEvery(rosterItemUpdated.type, handleAddedOrUpdatedLoco)
+  yield takeEvery(newLocoFormSubmit.type, handleAddedOrUpdatedLoco)
+  yield takeEvery(userChangedSpeed.type, handleUserChangedSpeed)
     yield takeEvery(userChangedDirection.type, handleUserChangedDirection)
     yield takeEvery(userStopLoco.type, handleStopLoco)
     yield takeEvery(userEmergencyStopLoco.type, handleEmergencyStopLoco)
@@ -275,7 +283,8 @@ function* commandSaga() {
     yield takeEvery(userChangedPower.type, handleUserChangedPower)
     yield takeEvery(createPowerCommand.type, handleCreatePowerCommand)
     yield takeEvery(userPopulateRoster.type, handlePopulateRoster)
-    yield takeEvery(createRosterCommand.type, handleCreateRosterCommand)
+  yield takeEvery(createRosterCommand.type, handleCreateRosterCommand)
+  yield takeEvery(userResetAndClearData.type, handleUserResetAndClearData)
 }
 
 export default commandSaga;

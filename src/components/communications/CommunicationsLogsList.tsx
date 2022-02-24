@@ -12,9 +12,9 @@ export const CommunicationsLogsList = ({logs}: CommunicationsLogsListProps) => {
     }
 
     return (
-        <ul>
+        <div>
             {logs.map((log, index) => <CommunicationsLog key={index} log={log}/>)}
-        </ul>
+        </div>
     )
 }
 
