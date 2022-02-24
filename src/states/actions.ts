@@ -6,6 +6,7 @@ import {
     genericParser,
     ParserResult,
     powerCommand,
+    PowerResult,
     rosterCommand,
     RosterItemResult,
     throttleCommand
@@ -18,6 +19,7 @@ import {
     commandReceived,
     commandSend,
     commandWrite,
+    powerCommandParsed,
     rosterItemCommandParsed,
     throttleCommandParsed
 } from "./actions/commands";
@@ -57,11 +59,18 @@ import {
 
 function* handleParsedCommand({payload}: { type: string, payload: ParserResult<any> }) {
     console.debug("handleParsedCommand", payload);
-    if (payload.parser === FunctionName.THROTTLE) {
-        yield put(throttleCommandParsed(payload));
-    }
-    if (payload.parser === FunctionName.ROSTER_ITEM) {
-        yield put(rosterItemCommandParsed(payload));
+    const {parser} = payload
+
+    switch (parser) {
+        case FunctionName.THROTTLE:
+            yield put(throttleCommandParsed(payload));
+            break;
+        case FunctionName.ROSTER_ITEM:
+            yield put(rosterItemCommandParsed(payload));
+            break;
+        case FunctionName.POWER:
+            yield put(powerCommandParsed(payload))
+            break;
     }
 }
 
@@ -101,6 +110,12 @@ function* handleRosterItemCommandParsed({payload}: { type: string, payload: Rost
         functionButtons
     }
     yield put(rosterItemUpdated(loco))
+}
+
+function* handlePowerCommandParsed({payload}: { type: string, payload: PowerResult }) {
+    console.debug("handlePowerCommandParsed", payload);
+    const {params: {power}} = payload
+    yield put(updatePowerState(power as BitValue))
 }
 
 function* handleAddedOrUpdatedLoco({payload}: { type: string, payload: AddLocoParams }) {
@@ -299,6 +314,7 @@ function* commandSaga() {
     yield takeEvery(commandSend.type, handleCommandSend)
     yield takeLatest(setCommunicationsWriter.type, handleSetCommunicationsWriter)
     yield takeEvery(rosterItemCommandParsed.type, handleRosterItemCommandParsed)
+    yield takeEvery(powerCommandParsed.type, handlePowerCommandParsed)
     yield takeEvery(rosterItemUpdated.type, handleAddedOrUpdatedLoco)
     yield takeEvery(newLocoFormSubmit.type, handleAddedOrUpdatedLoco)
     yield takeEvery(userChangedSpeed.type, handleUserChangedSpeed)
