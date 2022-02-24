@@ -3,17 +3,17 @@ import React, {FormEvent} from "react";
 import {userResetAndClearData} from "../../states/actions/stores";
 
 export const WipeForm = () => {
-  const dispatch = useDispatch()
+    const dispatch = useDispatch()
 
-  const handleWipe = (event: FormEvent) => {
-    event.preventDefault()
+    const handleWipe = (event: FormEvent) => {
+        event.preventDefault()
 
-    dispatch(userResetAndClearData())
-  }
+        dispatch(userResetAndClearData())
+    }
 
-  return (
-    <form action="/stores/wipe" method="post" onSubmit={handleWipe}>
-      <button type="submit">Wipe</button>
-    </form>
-  );
+    return (
+        <form action="/stores/wipe" method="post" onSubmit={handleWipe}>
+            <button type="submit">Wipe</button>
+        </form>
+    );
 }

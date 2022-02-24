@@ -5,17 +5,17 @@ import {updatePowerState} from "../actions/powers";
 import {userResetState} from "../actions/stores";
 
 const initialState: PowersState = {
-  JOIN: 0,
-  MAIN: 0,
-  PROG: 0
+    JOIN: 0,
+    MAIN: 0,
+    PROG: 0
 }
 
 export const powersReducer = createReducer(initialState, builder => {
-  builder.addCase(userResetState, () => initialState)
-  builder.addCase(updatePowerState, (state, {payload: power}) => {
-    state[Track.JOIN] = power
-    state[Track.MAIN] = power
-    state[Track.PROG] = power
-  })
+    builder.addCase(userResetState, () => initialState)
+    builder.addCase(updatePowerState, (state, {payload: power}) => {
+        state[Track.JOIN] = power
+        state[Track.MAIN] = power
+        state[Track.PROG] = power
+    })
 })
 

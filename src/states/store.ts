@@ -17,7 +17,7 @@ const localStorageMiddleware: Middleware = ({getState}) => {
             localStorage.removeItem('applicationState')
         } else {
             localStorage.setItem('applicationState', JSON.stringify(
-              getState()
+                getState()
             ));
         }
 
@@ -42,8 +42,8 @@ export const store = configureStore({
     },
     middleware: (getDefaultMiddleware) => {
         return getDefaultMiddleware().concat(
-          sagaMiddleware,
-          localStorageMiddleware
+            sagaMiddleware,
+            localStorageMiddleware
         );
     },
     preloadedState: loadLocalState()

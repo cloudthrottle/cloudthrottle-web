@@ -3,17 +3,17 @@ import React, {FormEvent} from "react";
 import {userClearCommunicationLogs} from "../../states/actions/communications";
 
 export const ClearLogsForm = () => {
-  const dispatch = useDispatch()
+    const dispatch = useDispatch()
 
-  const handleClearLogs = (event: FormEvent) => {
-    event.preventDefault()
+    const handleClearLogs = (event: FormEvent) => {
+        event.preventDefault()
 
-    dispatch(userClearCommunicationLogs())
-  }
+        dispatch(userClearCommunicationLogs())
+    }
 
-  return (
-    <form action="/communications/logs/clear" method="post" onSubmit={handleClearLogs}>
-      <button type="submit">Clear Logs</button>
-    </form>
-  );
+    return (
+        <form action="/communications/logs/clear" method="post" onSubmit={handleClearLogs}>
+            <button type="submit">Clear Logs</button>
+        </form>
+    );
 }
