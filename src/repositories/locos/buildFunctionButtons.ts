@@ -29,7 +29,7 @@ export const convertWebThrottleMapToFunctionButtons = (webThrottleMap: WebThrott
   return Object.entries(fnData)
     .reduce((acc, [fnName, buttonData]) => {
       const name = parseInt(fnName.replace('f', ''))
-      const [state, typeNumber, display, visible] = buttonData
+      const [state, typeNumber, display] = buttonData
 
       const kind = typeNumber === 1 ? FunctionButtonKind.PRESS : FunctionButtonKind.TOGGLE
       const functionButton: FunctionButton = {

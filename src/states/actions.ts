@@ -298,7 +298,7 @@ function* handleUserResetAndClearData() {
 function* handleUserImportsSettings({payload}: { type: string, payload: string }) {
     console.debug("handleUserImportsSettings", payload);
     const settings: WebThrottleSettings = JSON.parse(payload)
-    const [{maps}, {locos}, {preferences}] = settings
+    const [{maps}, {locos}] = settings
     yield put(importMaps(maps))
     yield put(importLocos({locos, maps}))
 }
