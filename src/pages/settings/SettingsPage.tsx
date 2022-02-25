@@ -14,6 +14,11 @@ export const SettingsPage = () => {
       <div className="container">
         <div>
           <h3>Storage</h3>
+          <p>
+            <small>
+              Manage the current app state and local storage
+            </small>
+          </p>
           <ClearLocalStorageForm/>
           <ResetStateForm/>
           <WipeForm/>
@@ -21,6 +26,9 @@ export const SettingsPage = () => {
 
         <div>
           <h3>Imports</h3>
+          <p><small>
+            Import data from WebThrottle
+          </small></p>
           <ImportSettingsForm/>
         </div>
 

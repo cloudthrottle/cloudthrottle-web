@@ -18,8 +18,13 @@ export const ImportSettingsForm = () => {
 
     return (
         <form action="/stores/import" method="post" onSubmit={handleImportSettingsFile}>
-            <input type="file"/>
-            <button type="submit">Import</button>
+            <label htmlFor="storage-data">
+                <div>Import App data from Web Throttle</div>
+                <small>* you can export the App data from the Web Throttle settings page</small>
+            </label>
+
+            <input type="file" id="storage-data"/>
+            <button type="submit">Import App Data</button>
         </form>
     );
 }
