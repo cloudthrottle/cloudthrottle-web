@@ -1,6 +1,7 @@
+export type LogItemKind = "sent" | "received";
 export type LogItem = {
     message: string
-    kind: "sent" | "received"
+    kind: LogItemKind
     timestamps: {
         createdAt: number
     }

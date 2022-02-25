@@ -1,5 +1,6 @@
 import {createAction} from "@reduxjs/toolkit";
 import {ParserResult, PowerResult, RosterItemResult, ThrottleResult} from "@cloudthrottle/dcc-ex--commands";
+import {LogItemKind} from "../../../types";
 
 export const commandReceived = createAction<string>('COMMAND_RECEIVED')
 export const commandSend = createAction<string>('COMMAND_SEND')
@@ -9,3 +10,4 @@ export const throttleCommandParsed = createAction<ThrottleResult>('THROTTLE_COMM
 export const rosterItemCommandParsed = createAction<RosterItemResult>('ROSTER_ITEM_COMMAND_PARSED')
 export const powerCommandParsed = createAction<PowerResult>('POWER_COMMAND_PARSED')
 export const commandWrite = createAction<string>('COMMAND_WRITE')
+export const addCommandToLog = createAction<{ kind: LogItemKind, message: string }>('ADD_COMMAND_TO_LOG')

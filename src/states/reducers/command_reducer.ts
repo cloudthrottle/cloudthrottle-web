@@ -1,6 +1,6 @@
 import {createReducer} from "@reduxjs/toolkit";
 import {CommunicationsState, LogItem} from "../../types";
-import {commandReceived, commandSend, commandWrite} from "../actions/commands";
+import {addCommandToLog, commandWrite} from "../actions/commands";
 import {setCommunicationsWriter, userClearCommunicationLogs} from "../actions/communications";
 import {userResetState} from "../actions/stores";
 
@@ -15,20 +15,9 @@ export const commandReducer = createReducer(initialState, builder => {
     builder.addCase(userClearCommunicationLogs, (state) => {
         state.logs = []
     })
-    builder.addCase(commandReceived, (state, {payload}) => {
+    builder.addCase(addCommandToLog, (state, {payload}) => {
         const log: LogItem = {
-            kind: "received",
-            message: payload,
-            timestamps: {
-                createdAt: Date.now()
-            }
-        }
-        state.logs = [log, ...state.logs]
-    })
-    builder.addCase(commandSend, (state, {payload}) => {
-        const log: LogItem = {
-            kind: "sent",
-            message: payload,
+            ...payload,
             timestamps: {
                 createdAt: Date.now()
             }

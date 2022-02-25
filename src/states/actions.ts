@@ -23,6 +23,7 @@ import {
     Writer
 } from "../types";
 import {
+    addCommandToLog,
     commandParsedFailed,
     commandParsedSuccess,
     commandReceived,
@@ -88,6 +89,7 @@ function* handleParsedCommand({payload}: { type: string, payload: ParserResult<a
 function* handleCommandReceived({payload}: { type: string, payload: string }) {
     console.debug("handleCommandReceived", payload);
     console.debug("READ: ", payload)
+    yield put(addCommandToLog({message: payload, kind: "received"}))
     const parser = genericParser()
 
     try {
@@ -100,6 +102,7 @@ function* handleCommandReceived({payload}: { type: string, payload: string }) {
 
 function* handleCommandSend({payload}: { type: string, payload: string }) {
     console.debug("handleCommandSend", payload);
+    yield put(addCommandToLog({message: payload, kind: "sent"}))
     yield put(commandWrite(payload));
 }
 
