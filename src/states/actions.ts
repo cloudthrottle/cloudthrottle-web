@@ -49,13 +49,14 @@ import {
 import {createPowerCommand, updatePowerState, userChangedPower} from "./actions/powers";
 import {
     importLocos,
+    ImportLocosActionPayload,
     userClearLocalStorage,
     userImportsSettings,
     userResetAndClearData,
     userResetState,
-    WebThrottleLocos,
     WebThrottleSettings
 } from "./actions/stores";
+import {convertWebThrottleMapToFunctionButtons} from "../repositories/locos";
 
 function* handleParsedCommand({payload}: { type: string, payload: ParserResult<any> }) {
     console.debug("handleParsedCommand", payload);
@@ -288,19 +289,25 @@ function* handleUserImportsSettings({payload}: { type: string, payload: string }
     console.debug("handleUserImportsSettings", payload);
     const settings: WebThrottleSettings = JSON.parse(payload)
     const [{maps}, {locos}, {preferences}] = settings
-    yield put(importLocos({locos}))
+    yield put(importLocos({locos, maps}))
 }
 
-type HandleImportLocosParams = { type: string, payload: { locos: WebThrottleLocos } };
+type HandleImportLocosParams = { type: string, payload: ImportLocosActionPayload };
 
 function* handleImportLocos({payload}: HandleImportLocosParams) {
     console.debug("handleImportLocos", payload)
-    const {locos} = payload
+    const {locos, maps} = payload
+    if (locos === null) {
+        return
+    }
+
     const actions = locos.map(loco => {
-        const {name, cv} = loco
+        const {name, cv, map: mapName} = loco
+        const map = maps.find(possibleMap => possibleMap.mname === mapName)
         const param: AddLocoParams = {
             name,
             cabId: parseInt(cv),
+            functionButtons: convertWebThrottleMapToFunctionButtons(map)
         }
         return put(addOrUpdateLoco(param))
     })
