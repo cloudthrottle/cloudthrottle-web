@@ -39,9 +39,10 @@ export type ThrottleState = {
 };
 
 export type PartialFunctionButtons = FunctionButtons<Partial<FunctionButton>>;
+export type FunctionButtonMaps = FunctionButtonMap[]
 export type FunctionButtonMap = {
     display: string,
-    functionButton: FunctionButtons
+    functionButtons: FunctionButtons
 }
 
-export type AddLocoParams = Partial<PartialLoco> & Pick<PartialLoco, 'cabId' | 'name'>
+export type AddLocoParams = Partial<PartialLoco> & Pick<Loco, 'cabId' | 'name'>

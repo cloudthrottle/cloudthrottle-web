@@ -21,7 +21,7 @@ export const convertWebThrottleMaps = (webThrottleMaps: WebThrottleMaps | undefi
   return webThrottleMaps?.map(convertWebThrottleMapToFunctionButtons)
 }
 
-export const convertWebThrottleMapToFunctionButtons = (webThrottleMap: WebThrottleMap | undefined): PartialFunctionButtons => {
+export const convertWebThrottleMapToFunctionButtons = (webThrottleMap: WebThrottleMap | undefined): FunctionButtons => {
   if (webThrottleMap === undefined) {
     return {}
   }
@@ -42,5 +42,5 @@ export const convertWebThrottleMapToFunctionButtons = (webThrottleMap: WebThrott
         ...acc,
         [name]: functionButton
       }
-    }, {} as PartialFunctionButtons)
+    }, {} as FunctionButtons)
 }

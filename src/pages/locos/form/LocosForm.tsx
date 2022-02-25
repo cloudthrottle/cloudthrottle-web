@@ -19,7 +19,7 @@ export const LocosForm = () => {
 
         dispatch(newLocoFormSubmit({
             name: name.toString(),
-            cabId: parseInt(cabId.toString())
+            cabId: parseInt(cabId.toString()),
         }))
 
         // @ts-ignore

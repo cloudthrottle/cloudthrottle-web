@@ -12,7 +12,16 @@ import {
     throttleCommand
 } from "@cloudthrottle/dcc-ex--commands";
 import {call, put, takeEvery, takeLatest} from 'redux-saga/effects'
-import {AddLocoParams, Loco, Locos, PartialFunctionButtons, ThrottleState, Writer} from "../types";
+import {
+    AddLocoParams,
+    FunctionButtonMap,
+    FunctionButtonMaps,
+    Loco,
+    Locos,
+    PartialFunctionButtons,
+    ThrottleState,
+    Writer
+} from "../types";
 import {
     commandParsedFailed,
     commandParsedSuccess,
@@ -57,6 +66,7 @@ import {
     WebThrottleSettings
 } from "./actions/stores";
 import {convertWebThrottleMapToFunctionButtons} from "../repositories/locos";
+import {addOrUpdateMap, importMaps, ImportMapsActionPayload} from "./actions/button_maps";
 
 function* handleParsedCommand({payload}: { type: string, payload: ParserResult<any> }) {
     console.debug("handleParsedCommand", payload);
@@ -289,6 +299,7 @@ function* handleUserImportsSettings({payload}: { type: string, payload: string }
     console.debug("handleUserImportsSettings", payload);
     const settings: WebThrottleSettings = JSON.parse(payload)
     const [{maps}, {locos}, {preferences}] = settings
+    yield put(importMaps(maps))
     yield put(importLocos({locos, maps}))
 }
 
@@ -314,6 +325,21 @@ function* handleImportLocos({payload}: HandleImportLocosParams) {
 
     yield* actions
 }
+
+type HandleImportMapsParams = { type: string, payload: ImportMapsActionPayload };
+
+function* handleImportMaps({payload}: HandleImportMapsParams) {
+    console.debug("handleImportMaps", payload)
+    const buttonMaps: FunctionButtonMaps = payload.map(webThrottleMap => {
+        const buttonMap: FunctionButtonMap = {
+            display: webThrottleMap.mname,
+            functionButtons: convertWebThrottleMapToFunctionButtons(webThrottleMap)
+        }
+        return buttonMap
+    })
+    yield* buttonMaps.map(buttonMap => put(addOrUpdateMap(buttonMap)))
+}
+
 
 function* commandSaga() {
     yield takeEvery(commandReceived.type, handleCommandReceived);
@@ -341,6 +367,7 @@ function* commandSaga() {
     yield takeEvery(createRosterCommand.type, handleCreateRosterCommand)
     yield takeEvery(userResetAndClearData.type, handleUserResetAndClearData)
     yield takeEvery(userImportsSettings.type, handleUserImportsSettings)
+    yield takeEvery(importMaps.type, handleImportMaps)
     yield takeEvery(importLocos.type, handleImportLocos)
 }
 
