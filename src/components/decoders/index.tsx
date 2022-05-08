@@ -13,7 +13,7 @@ export const ReadForm = () => {
 
     return (
         <form action="/decoders/read_address" method="post" onSubmit={handleRead}>
-            <button type="submit">Read</button>
+            <button type="submit">Read Address</button>
         </form>
     );
 }
