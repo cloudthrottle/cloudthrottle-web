@@ -6,7 +6,7 @@ import {
     genericParser,
     ParserResult,
     powerCommand,
-    PowerResult,
+    PowerResult, readAddressProgrammingCommand,
     rosterCommand,
     RosterItemResult,
     throttleCommand
@@ -68,6 +68,7 @@ import {
 } from "./actions/stores";
 import {convertWebThrottleMapToFunctionButtons} from "../repositories/locos";
 import {addOrUpdateMap, importMaps, ImportMapsActionPayload} from "./actions/button_maps";
+import {createDecoderReadAddressCommand, userDecoderReadAddress} from "./actions/decoders";
 
 function* handleParsedCommand({payload}: { type: string, payload: ParserResult<any> }) {
     console.debug("handleParsedCommand", payload);
@@ -257,6 +258,19 @@ function* handleCreatePowerCommand({payload}: { type: string, payload: BitValue 
     yield put(commandSend(command))
 }
 
+function* handleUserDecoderReadAddress() {
+    console.debug("handleUserDecoderReadAddress");
+
+    yield put(createDecoderReadAddressCommand())
+}
+
+function* handleCreateDecoderReadAddressCommand() {
+    console.debug("handleCreateDecoderReadAddressCommand");
+
+    const command = readAddressProgrammingCommand()
+    yield put(commandSend(command))
+}
+
 function* handleCreateCabCommand({payload}: { type: string, payload: { loco: Loco, functionButtons: PartialFunctionButtons } }) {
     console.debug("handleCreateCabCommand", payload);
     const {loco, functionButtons} = payload
@@ -372,6 +386,8 @@ function* commandSaga() {
     yield takeEvery(userImportsSettings.type, handleUserImportsSettings)
     yield takeEvery(importMaps.type, handleImportMaps)
     yield takeEvery(importLocos.type, handleImportLocos)
+    yield takeEvery(userDecoderReadAddress.type, handleUserDecoderReadAddress)
+    yield takeEvery(createDecoderReadAddressCommand.type, handleCreateDecoderReadAddressCommand)
 }
 
 export default commandSaga;
