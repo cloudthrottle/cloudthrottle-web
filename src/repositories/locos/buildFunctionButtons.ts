@@ -3,44 +3,44 @@ import {FunctionButton, FunctionButtonKind, FunctionButtons} from "@cloudthrottl
 import {WebThrottleMap, WebThrottleMaps} from "../../states/actions/stores";
 
 export const buildFunctionButtons = (buttons: PartialFunctionButtons | undefined = {}): FunctionButtons => {
-  return Array(29).fill(null)
-    .reduce((acc, currentValue, currentIndex) => {
-      const buttonData = buttons[currentIndex]
+    return Array(29).fill(null)
+        .reduce((acc, currentValue, currentIndex) => {
+            const buttonData = buttons[currentIndex]
 
-      acc[currentIndex] = {
-        value: 0,
-        display: `F${currentIndex}`,
-        kind: FunctionButtonKind.TOGGLE,
-        ...buttonData
-      }
-      return acc
-    }, {} as FunctionButtons);
+            acc[currentIndex] = {
+                value: 0,
+                display: `F${currentIndex}`,
+                kind: FunctionButtonKind.TOGGLE,
+                ...buttonData
+            }
+            return acc
+        }, {} as FunctionButtons);
 };
 
 export const convertWebThrottleMaps = (webThrottleMaps: WebThrottleMaps | undefined = []): PartialFunctionButtons[] => {
-  return webThrottleMaps?.map(convertWebThrottleMapToFunctionButtons)
+    return webThrottleMaps?.map(convertWebThrottleMapToFunctionButtons)
 }
 
 export const convertWebThrottleMapToFunctionButtons = (webThrottleMap: WebThrottleMap | undefined): FunctionButtons => {
-  if (webThrottleMap === undefined) {
-    return {}
-  }
-  const {fnData} = webThrottleMap
-  return Object.entries(fnData)
-    .reduce((acc, [fnName, buttonData]) => {
-      const name = parseInt(fnName.replace('f', ''))
-      const [state, typeNumber, display] = buttonData
+    if (webThrottleMap === undefined) {
+        return {}
+    }
+    const {fnData} = webThrottleMap
+    return Object.entries(fnData)
+        .reduce((acc, [fnName, buttonData]) => {
+            const name = parseInt(fnName.replace('f', ''))
+            const [state, typeNumber, display] = buttonData
 
-      const kind = typeNumber === 1 ? FunctionButtonKind.PRESS : FunctionButtonKind.TOGGLE
-      const functionButton: FunctionButton = {
-        value: state,
-        kind,
-        display
-      }
+            const kind = typeNumber === 1 ? FunctionButtonKind.PRESS : FunctionButtonKind.TOGGLE
+            const functionButton: FunctionButton = {
+                value: state,
+                kind,
+                display
+            }
 
-      return {
-        ...acc,
-        [name]: functionButton
-      }
-    }, {} as FunctionButtons)
+            return {
+                ...acc,
+                [name]: functionButton
+            }
+        }, {} as FunctionButtons)
 }

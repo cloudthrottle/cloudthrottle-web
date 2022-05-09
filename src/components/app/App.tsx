@@ -1,7 +1,7 @@
 import React, {FormEvent} from 'react';
 import './App.css';
 import {NavLink, Route, Routes} from "react-router-dom";
-import {CommunicationsPage, LocosPage, ThrottlesPage} from "../../pages";
+import {CommunicationsPage, DecodersPage, LocosPage, ThrottlesPage} from "../../pages";
 import {RootState} from "../../states";
 import {createSerialConnection} from "@cloudthrottle/dcc-ex--serial-communicator";
 import {useDispatch, useSelector} from "react-redux";
@@ -35,6 +35,7 @@ export const App = () => {
                         <NavLink to="/communications">Comms</NavLink>
                         <NavLink to="/locos">Locos</NavLink>
                         <NavLink to="/throttles">Throttles</NavLink>
+                        <NavLink to="/decoders">Decoders</NavLink>
                     </nav>
                     <div className="actions">
                         <NavLink to="/settings">
@@ -49,9 +50,10 @@ export const App = () => {
 
             <Routes>
                 <Route path="/communications/*" element={<CommunicationsPage/>}/>
+                <Route path="/decoders/*" element={<DecodersPage/>}/>
                 <Route path="/locos/*" element={<LocosPage/>}/>
-                <Route path="/throttles/*" element={<ThrottlesPage/>}/>
                 <Route path="/settings/*" element={<SettingsPage/>}/>
+                <Route path="/throttles/*" element={<ThrottlesPage/>}/>
             </Routes>
         </>
     )
