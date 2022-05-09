@@ -1,12 +1,14 @@
 import {
     BitValue,
     cabCommand,
+    DecoderAddressResult,
     emergencyStopCommand,
     FunctionName,
     genericParser,
     ParserResult,
     powerCommand,
-    PowerResult, readAddressProgrammingCommand,
+    PowerResult,
+    readAddressProgrammingCommand,
     rosterCommand,
     RosterItemResult,
     throttleCommand
@@ -68,7 +70,12 @@ import {
 } from "./actions/stores";
 import {convertWebThrottleMapToFunctionButtons} from "../repositories/locos";
 import {addOrUpdateMap, importMaps, ImportMapsActionPayload} from "./actions/button_maps";
-import {createDecoderReadAddressCommand, userDecoderReadAddress} from "./actions/decoders";
+import {
+    createDecoderReadAddressCommand,
+    decoderReadAddressCommandParsed,
+    updateLastReadAddressState,
+    userDecoderReadAddress
+} from "./actions/decoders";
 
 function* handleParsedCommand({payload}: { type: string, payload: ParserResult<any> }) {
     console.debug("handleParsedCommand", payload);
@@ -83,6 +90,9 @@ function* handleParsedCommand({payload}: { type: string, payload: ParserResult<a
             break;
         case FunctionName.POWER:
             yield put(powerCommandParsed(payload))
+            break;
+        case FunctionName.DECODER_ADDRESS:
+            yield put(decoderReadAddressCommandParsed(payload))
             break;
     }
 }
@@ -131,6 +141,12 @@ function* handlePowerCommandParsed({payload}: { type: string, payload: PowerResu
     console.debug("handlePowerCommandParsed", payload);
     const {params: {power}} = payload
     yield put(updatePowerState(power as BitValue))
+}
+
+function* handleDecoderReadAddressCommandParsed({payload}: { type: string, payload: DecoderAddressResult }) {
+    console.log("handleDecoderReadAddressCommandParsed", payload);
+    const {params: {address}} = payload
+    yield put(updateLastReadAddressState(address))
 }
 
 function* handleAddedOrUpdatedLoco({payload}: { type: string, payload: AddLocoParams }) {
@@ -388,6 +404,7 @@ function* commandSaga() {
     yield takeEvery(importLocos.type, handleImportLocos)
     yield takeEvery(userDecoderReadAddress.type, handleUserDecoderReadAddress)
     yield takeEvery(createDecoderReadAddressCommand.type, handleCreateDecoderReadAddressCommand)
+    yield takeEvery(decoderReadAddressCommandParsed.type, handleDecoderReadAddressCommandParsed)
 }
 
 export default commandSaga;

@@ -23,8 +23,10 @@ export const ImportSettingsForm = () => {
                 <small>* you can export the App data from the Web Throttle settings page</small>
             </label>
 
-            <input type="file" id="storage-data"/>
-            <button type="submit">Import App Data</button>
+            <div style={{display: "flex", gap: "1rem", alignItems: "baseline"}}>
+                <input type="file" id="storage-data"/>
+                <button type="submit">Import App Data</button>
+            </div>
         </form>
     );
 }
