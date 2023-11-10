@@ -119,7 +119,7 @@ function* handleCommandSend({payload}: { type: string, payload: string }) {
 
 function* handleSetCommunicationsWriter({payload}: { type: string, payload: Writer }) {
     console.debug("handleSetCommunicationsWriter", payload);
-    if (!!payload) {
+    if (payload) {
         yield put(communicationsConnected())
     } else {
         yield put(communicationsDisconnected())

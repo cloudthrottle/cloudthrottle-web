@@ -18,7 +18,9 @@ export const App = () => {
         event.preventDefault()
         try {
             const {writer} = await createSerialConnection({readHandler: handleRead});
-            dispatch(setCommunicationsWriter(writer))
+            // @ts-ignore
+            window.writer = writer
+            dispatch(setCommunicationsWriter(!!writer))
         } catch (e) {
             console.debug(e)
             return
