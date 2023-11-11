@@ -27,8 +27,10 @@ nav a.active {
 
 .nav-bar .actions {
     display: flex;
-    gap: 1rem;
+    flex-wrap: wrap;
     align-items: baseline;
+    justify-content: end;
+    gap: 0 1rem;
 }
 
 .comms-forms {
@@ -55,24 +57,64 @@ nav a.active {
     flex: 1;
 }
 
-.loco {
+.turnouts {
     display: grid;
-    grid-template-columns: repeat(8, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 1.8em 1em;
+}
+
+.loco, .turnout {
+    display: grid;
     grid-auto-rows: 2.5em;
     grid-gap: 0.3em;
 }
 
-.name {
-    grid-column: 1 / span 5;
+.loco {
+    grid-template-columns: repeat(8, 1fr);
+}
+
+.turnout {
+    grid-template-columns: 5em repeat(2, 1fr);
+}
+
+.loco > .name {
+    grid-column: auto / span 5;
     display: flex;
     align-items: center;
+}
 
+.turnout > .id {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    padding-inline-end: 1em;
+}
+
+.turnout > .name {
+    grid-column: auto / span 2;
+    display: flex;
+    align-items: center;
+}
+
+.turnout_position_control {
+    grid-column: 2 / span 2;
+}
+
+.turnout_position {
+    margin: 0;
+}
+
+.p-0 {
+    padding: 0;
+}
+
+.m-0 {
+    margin: 0;
 }
 
 .name > h2 {
     padding: 0;
     margin: 0;
-
 }
 
 .speed {
@@ -102,7 +144,8 @@ button, select, input {
     grid-template-columns: subgrid;
 }
 
-.functions button:enabled[value="1"] {
+.functions button:enabled[value="1"],
+button:enabled[value="1"].turnout_position {
     opacity: 0.8;
 }
 

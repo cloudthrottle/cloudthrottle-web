@@ -1,6 +1,8 @@
+import {TurnoutState} from "@cloudthrottle/dcc-ex--commands";
+
 export enum TurnoutPosition {
-    CLOSED = 0,
-    THROWN = 1
+    CLOSED = TurnoutState.CLOSED,
+    THROWN = TurnoutState.THROWN
 }
 
 export type Turnout = {

@@ -12,9 +12,9 @@ export const TurnoutsList = ({turnouts}: TurnoutsListProps) => {
     }
 
     return (
-        <ul>
+        <div className="turnouts">
             {Object.entries(turnouts).map(([id, turnout]) => <TurnoutsListItem turnout={turnout} key={id}/>)}
-        </ul>
+        </div>
     )
 }
 

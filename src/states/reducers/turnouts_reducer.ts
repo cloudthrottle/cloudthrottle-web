@@ -1,7 +1,7 @@
 import {createReducer} from "@reduxjs/toolkit";
 import {TurnoutsState} from "../../types";
 import {userResetState} from "../actions/stores";
-import {addOrUpdateTurnout} from "../actions/turnouts";
+import {addOrUpdateTurnout, updateTurnoutPosition} from "../actions/turnouts";
 import {buildTurnout, mergeTurnout} from "../../repositories/turnouts";
 
 const initialState: TurnoutsState = {
@@ -19,6 +19,18 @@ export const turnoutsReducer = createReducer(initialState, builder => {
             state.entities[id] = mergeTurnout({turnout: payload, existingTurnout: existingTurnout})
         } else {
             state.entities[id] = buildTurnout(payload)
+        }
+    })
+
+    builder.addCase(updateTurnoutPosition, (state, {payload}) => {
+        const {turnout: {id}, position} = payload
+
+        if (state.entities.hasOwnProperty(id)) {
+            const existingTurnout = state.entities[id]
+            state.entities[id] = {
+                ...existingTurnout,
+                position
+            }
         }
     })
 })

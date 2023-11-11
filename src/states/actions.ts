@@ -13,7 +13,7 @@ import {
     readAddressProgrammingCommand,
     rosterCommand,
     RosterItemResult,
-    throttleCommand
+    throttleCommand, turnoutCommand, TurnoutState
 } from "@cloudthrottle/dcc-ex--commands";
 import {call, put, takeEvery, takeLatest} from 'redux-saga/effects'
 import {
@@ -24,7 +24,7 @@ import {
     Loco,
     Locos,
     PartialFunctionButtons,
-    ThrottleState,
+    ThrottleState, Turnout, TurnoutPosition,
     Writer
 } from "../types";
 import {
@@ -82,7 +82,7 @@ import {
 import {
     addOrUpdateTurnout,
     createDefineTurnoutCommand,
-    newTurnoutFormSubmit,
+    newTurnoutFormSubmit, updateTurnoutPosition, userChangedTurnoutPosition,
     userPopulateTurnouts
 } from "./actions/turnouts";
 
@@ -406,6 +406,15 @@ function* handlePopulateTurnouts() {
     yield put(commandSend(command))
 }
 
+function* handleUserChangedTurnoutPosition({payload}: { type: string, payload: { turnout: Turnout, position: number } }) {
+    yield put(updateTurnoutPosition(payload))
+    const command = turnoutCommand({
+        turnout: payload.turnout.id,
+        thrown: payload.position
+    })
+    yield put(commandSend(command))
+}
+
 
 function* commandSaga() {
     yield takeEvery(commandReceived.type, handleCommandReceived);
@@ -442,6 +451,7 @@ function* commandSaga() {
     yield takeEvery(newTurnoutFormSubmit.type, handleNewTurnoutFormSubmit)
     yield takeEvery(createDefineTurnoutCommand.type, handleCreateDefineTurnoutCommand)
     yield takeEvery(userPopulateTurnouts.type, handlePopulateTurnouts)
+    yield takeEvery(userChangedTurnoutPosition.type, handleUserChangedTurnoutPosition)
 }
 
 export default commandSaga;
