@@ -2,9 +2,11 @@ import {
     BitValue,
     cabCommand,
     DecoderAddressResult,
+    defineDCCTurnoutCommand,
     emergencyStopCommand,
     FunctionName,
     genericParser,
+    listTurnoutsCommand,
     ParserResult,
     powerCommand,
     PowerResult,
@@ -16,6 +18,7 @@ import {
 import {call, put, takeEvery, takeLatest} from 'redux-saga/effects'
 import {
     AddLocoParams,
+    AddTurnoutParams,
     FunctionButtonMap,
     FunctionButtonMaps,
     Loco,
@@ -76,6 +79,12 @@ import {
     updateLastReadAddressState,
     userDecoderReadAddress
 } from "./actions/decoders";
+import {
+    addOrUpdateTurnout,
+    createDefineTurnoutCommand,
+    newTurnoutFormSubmit,
+    userPopulateTurnouts
+} from "./actions/turnouts";
 
 function* handleParsedCommand({payload}: { type: string, payload: ParserResult<any> }) {
     console.debug("handleParsedCommand", payload);
@@ -374,6 +383,30 @@ function* handleImportMaps({payload}: HandleImportMapsParams) {
 }
 
 
+function* handleNewTurnoutFormSubmit({payload}: { type: string, payload: AddTurnoutParams }) {
+    console.debug("handleNewTurnoutFormSubmit", payload);
+    yield put(createDefineTurnoutCommand(payload))
+    yield put(addOrUpdateTurnout(payload))
+}
+
+function* handleCreateDefineTurnoutCommand({payload}: { type: string, payload: AddTurnoutParams }) {
+    console.debug("handleCreateDefineTurnoutCommand", payload);
+
+    const command = defineDCCTurnoutCommand({
+        turnout: payload.id,
+        address: payload.address
+    })
+    yield put(commandSend(command))
+}
+
+function* handlePopulateTurnouts() {
+    console.debug("handlePopulateTurnouts");
+
+    const command = listTurnoutsCommand()
+    yield put(commandSend(command))
+}
+
+
 function* commandSaga() {
     yield takeEvery(commandReceived.type, handleCommandReceived);
     yield takeEvery(commandParsedSuccess.type, handleParsedCommand)
@@ -405,6 +438,10 @@ function* commandSaga() {
     yield takeEvery(userDecoderReadAddress.type, handleUserDecoderReadAddress)
     yield takeEvery(createDecoderReadAddressCommand.type, handleCreateDecoderReadAddressCommand)
     yield takeEvery(decoderReadAddressCommandParsed.type, handleDecoderReadAddressCommandParsed)
+
+    yield takeEvery(newTurnoutFormSubmit.type, handleNewTurnoutFormSubmit)
+    yield takeEvery(createDefineTurnoutCommand.type, handleCreateDefineTurnoutCommand)
+    yield takeEvery(userPopulateTurnouts.type, handlePopulateTurnouts)
 }
 
 export default commandSaga;

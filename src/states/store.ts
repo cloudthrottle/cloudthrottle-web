@@ -8,6 +8,7 @@ import {Middleware} from "redux";
 import {userClearLocalStorage} from "./actions/stores";
 import {buttonMapsReducer} from "./reducers/button_maps_reducer";
 import {decoderReducer} from "./reducers/decoders_reducer";
+import {turnoutsReducer} from "./reducers/turnouts_reducer";
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -42,7 +43,8 @@ export const store = configureStore({
         communications: commandReducer,
         roster: rostersReducer,
         buttonMaps: buttonMapsReducer,
-        decoders: decoderReducer
+        decoders: decoderReducer,
+        turnouts: turnoutsReducer
     },
     middleware: (getDefaultMiddleware) => {
         return getDefaultMiddleware().concat(
