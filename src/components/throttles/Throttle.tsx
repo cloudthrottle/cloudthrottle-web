@@ -99,16 +99,10 @@ export const Throttle = ({loco}: ThrottleProps) => {
                 <h2>{loco.name}</h2>
             </div>
 
-            <div className="view">
-                <button disabled={true}>view</button>
-            </div>
+            {/*<div className="view">*/}
+            {/*    <button disabled={true}>view</button>*/}
+            {/*</div>*/}
 
-            <form action={`/cabs/${loco.cabId}/e-stop`}
-                  method="post"
-                  className="e-stop"
-                  onSubmit={handleEStopSubmit}>
-                <button type="submit">E-Stop</button>
-            </form>
 
             <form action={`/cabs/${loco.cabId}/function`}
                   method="post"
@@ -124,6 +118,13 @@ export const Throttle = ({loco}: ThrottleProps) => {
                 <button type="button" disabled={true}>more</button>
             </form>
 
+            <form action={`/cabs/${loco.cabId}/e-stop`}
+                  method="post"
+                  className="e-stop"
+                  onSubmit={handleEStopSubmit}>
+                <button type="submit">E-Stop</button>
+            </form>
+
             <form action={`/cabs/${loco.cabId}/speed`}
                   method="post"
                   className="speed">
@@ -132,6 +133,7 @@ export const Throttle = ({loco}: ThrottleProps) => {
                        value={speed}
                        min={0}
                        max={126}
+                       step={5}
                        onChange={handleSpeedChange}
                 />
             </form>

@@ -18,7 +18,7 @@ export const EStop = ({locos}: { locos: Locos }) => {
               method="post"
               className="e-stop"
               onSubmit={handleEStopSubmit}>
-            <button type="submit">E-Stop</button>
+            <button type="submit">E-Stop All</button>
         </form>
     );
 };
