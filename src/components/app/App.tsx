@@ -34,8 +34,8 @@ export const App = () => {
                     <nav>
                         <NavLink to="/communications">Comms</NavLink>
                         <NavLink to="/locos">Locos</NavLink>
-                        <NavLink to="/throttles">Throttles</NavLink>
                         <NavLink to="/decoders">Decoders</NavLink>
+                        <NavLink to="/throttles">Throttles</NavLink>
                         <NavLink to="/turnouts">Turnouts</NavLink>
                     </nav>
                     <div className="actions">

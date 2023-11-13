@@ -13,18 +13,23 @@ import {
     readAddressProgrammingCommand,
     rosterCommand,
     RosterItemResult,
-    throttleCommand, turnoutCommand, TurnoutState
+    throttleCommand,
+    turnoutCommand,
+    TurnoutDCCResult,
+    TurnoutResult
 } from "@cloudthrottle/dcc-ex--commands";
 import {call, put, takeEvery, takeLatest} from 'redux-saga/effects'
 import {
     AddLocoParams,
+    AddOrUpdateTurnoutParams,
     AddTurnoutParams,
     FunctionButtonMap,
     FunctionButtonMaps,
     Loco,
     Locos,
     PartialFunctionButtons,
-    ThrottleState, Turnout, TurnoutPosition,
+    ThrottleState,
+    Turnout,
     Writer
 } from "../types";
 import {
@@ -82,7 +87,11 @@ import {
 import {
     addOrUpdateTurnout,
     createDefineTurnoutCommand,
-    newTurnoutFormSubmit, updateTurnoutPosition, userChangedTurnoutPosition,
+    newTurnoutFormSubmit,
+    turnoutCommandParsed,
+    turnoutDCCCommandParsed,
+    updateTurnoutPosition,
+    userChangedTurnoutPosition,
     userPopulateTurnouts
 } from "./actions/turnouts";
 
@@ -102,6 +111,12 @@ function* handleParsedCommand({payload}: { type: string, payload: ParserResult<a
             break;
         case FunctionName.DECODER_ADDRESS:
             yield put(decoderReadAddressCommandParsed(payload))
+            break;
+        case FunctionName.TURNOUT_DCC:
+            yield put(turnoutDCCCommandParsed(payload))
+            break;
+        case FunctionName.TURNOUT:
+            yield put(turnoutCommandParsed(payload))
             break;
     }
 }
@@ -407,12 +422,24 @@ function* handlePopulateTurnouts() {
 }
 
 function* handleUserChangedTurnoutPosition({payload}: { type: string, payload: { turnout: Turnout, position: number } }) {
+    console.debug("handleUserChangedTurnoutPosition");
     yield put(updateTurnoutPosition(payload))
     const command = turnoutCommand({
         turnout: payload.turnout.id,
         thrown: payload.position
     })
     yield put(commandSend(command))
+}
+
+function* handleTurnoutCommandParsed({payload}: { type: string, payload: TurnoutResult | TurnoutDCCResult }) {
+    console.debug("handleTurnoutCommandParsed");
+
+    const {params: {id, thrown}} = payload
+    const params: AddOrUpdateTurnoutParams = {
+        id,
+        position: thrown as BitValue
+    }
+    yield put(addOrUpdateTurnout(params))
 }
 
 
@@ -452,6 +479,8 @@ function* commandSaga() {
     yield takeEvery(createDefineTurnoutCommand.type, handleCreateDefineTurnoutCommand)
     yield takeEvery(userPopulateTurnouts.type, handlePopulateTurnouts)
     yield takeEvery(userChangedTurnoutPosition.type, handleUserChangedTurnoutPosition)
+    yield takeEvery(turnoutCommandParsed.type, handleTurnoutCommandParsed)
+    yield takeEvery(turnoutDCCCommandParsed.type, handleTurnoutCommandParsed)
 }
 
 export default commandSaga;

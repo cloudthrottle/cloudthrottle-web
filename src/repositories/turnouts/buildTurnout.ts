@@ -1,10 +1,10 @@
-import {AddTurnoutParams, Turnout, TurnoutPosition} from "../../types";
+import {AddOrUpdateTurnoutParams, Turnout, TurnoutPosition} from "../../types";
 
-export type BuildTurnoutParams = AddTurnoutParams
+export type BuildTurnoutParams = AddOrUpdateTurnoutParams
 type BuildTurnout = (params: BuildTurnoutParams) => Turnout
 
 type MergeTurnoutParams = {
-    turnout: AddTurnoutParams,
+    turnout: AddOrUpdateTurnoutParams,
     existingTurnout: Turnout
 }
 type MergeTurnout = (params: MergeTurnoutParams) => Turnout

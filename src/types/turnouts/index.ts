@@ -7,8 +7,8 @@ export enum TurnoutPosition {
 
 export type Turnout = {
     id: number,
-    address: number
     position: TurnoutPosition
+    address: number
 }
 
 export type Turnouts = {
@@ -20,3 +20,9 @@ export type TurnoutsState = {
 }
 
 export type AddTurnoutParams = Pick<Turnout, 'id' | 'address'>
+export type UpdateTurnoutParams = {
+    id: number,
+    position?: TurnoutPosition
+    address?: number
+}
+export type AddOrUpdateTurnoutParams = AddTurnoutParams | UpdateTurnoutParams

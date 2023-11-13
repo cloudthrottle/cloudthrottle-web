@@ -85,6 +85,8 @@ command_type --> THROTTLE_COMMAND_PARSED : "is throttle command"
 command_type --> ROSTER_ITEM_COMMAND_PARSED : "is roster item command"
 command_type --> POWER_COMMAND_PARSED : "is power command"
 command_type --> DECODER_READ_ADDRESS_COMMAND_PARSED : "is address read command"
+command_type --> TURNOUT_COMMAND_PARSED : "is turnout item command"
+command_type --> TURNOUT_DCC_COMMAND_PARSED : "is DCC turnout item command"
 
 COMMAND_SEND --> COMMAND_WRITE
 state writer_available <<choice>>
@@ -153,4 +155,7 @@ NEW_TURNOUT_FORM_SUBMIT --> ADD_OR_UPDATE_TURNOUT
 NEW_TURNOUT_FORM_SUBMIT --> CREATE_DEFINE_TURNOUT_COMMAND
 CREATE_DEFINE_TURNOUT_COMMAND --> COMMAND_SEND
 USER_POPULATE_TURNOUTS --> COMMAND_SEND
+
+TURNOUT_COMMAND_PARSED --> ADD_OR_UPDATE_TURNOUT
+TURNOUT_DCC_COMMAND_PARSED --> ADD_OR_UPDATE_TURNOUT
 ```
