@@ -1,3 +1,5 @@
+[![Test Suite CI](https://github.com/cloudthrottle/cloudthrottle-web/actions/workflows/testing.yml/badge.svg)](https://github.com/cloudthrottle/cloudthrottle-web/actions/workflows/testing.yml)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
