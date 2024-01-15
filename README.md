@@ -1,8 +1,20 @@
 [![Test Suite CI](https://github.com/cloudthrottle/cloudthrottle-web/actions/workflows/testing.yml/badge.svg)](https://github.com/cloudthrottle/cloudthrottle-web/actions/workflows/testing.yml)
 
-# Getting Started with Create React App
+# Cloudthrottle: A Web App for Model Railway DCC Control
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Cloudthrottle is a web app that lets you control your model railway layouts with Digital Command Control (DCC) from any device with a Chrome-based browser. You can connect your device to your DCC system via USB and access your layout and operate your trains with ease and realism.
+
+DCC is a technology that allows you to send commands to individual locomotives, accessories, and functions on your layout via the rails. You can adjust the speed, direction, lights, sound, and other features of your trains without complex wiring or isolation. You can also program your locomotives with different settings and behaviors to suit your preferences.
+
+Cloudthrottle connects to your DCC system via a simple interface and provides you with a user-friendly dashboard to control your layout. You can create custom throttles, switch points, set routes[^under-development], monitor feedback, and more.
+
+Cloudthrottle works with a command station that is built on an Arduino using the DCC-EX software. [DCC-EX] is a project that aims to provide an easy and inexpensive way to create your own DCC command station using Arduino boards and shields.
+
+If you are a model railway enthusiast who wants to enjoy the benefits of DCC with the convenience of a web app, Cloudthrottle is for you. Try it out today and discover a new way to control your layout.
+
+[DCC-EX]: https://dcc-ex.com/
+
+
 
 ## Available Scripts
 
