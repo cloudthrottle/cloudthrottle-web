@@ -3,12 +3,12 @@ import {userResetState} from "../actions/stores";
 import {updateLastReadAddressState} from "../actions/decoders";
 import {DecoderState} from "../../types";
 
-const initialState: DecoderState = {
+export const initialDecoderState: DecoderState = {
     readAddresses: []
 }
 
-export const decoderReducer = createReducer(initialState, builder => {
-    builder.addCase(userResetState, () => initialState)
+export const decoderReducer = createReducer(initialDecoderState, builder => {
+    builder.addCase(userResetState, () => initialDecoderState)
     builder.addCase(updateLastReadAddressState, (state, {payload: address}) => {
         state.readAddresses = [address, ...state.readAddresses]
     })
