@@ -34,7 +34,7 @@ describe("Locos reducer", () => {
         expect(locosState).toEqual({entities: {}})
     })
 
-    it("adds a Loco on UPDATE_POWER_STATE", () => {
+    it("adds a Loco on ADD_OR_UPDATE_LOCO", () => {
         const action = addOrUpdateLoco({cabId: 1, name: 'test'})
         const locosState = rostersReducer(undefined, action)
 
@@ -50,7 +50,8 @@ describe("Locos reducer", () => {
         expect(locosState).toEqual({entities: {1: expectedLoco}})
     })
 
-    it("updates an existing Loco on UPDATE_POWER_STATE", () => {
+    // FIXME: Test updating FunctionButtons and Throttle using ADD_OR_UPDATE_LOCO
+    it("updates an existing Loco on ADD_OR_UPDATE_LOCO", () => {
         const initialLoco: Loco = {
             cabId: 1,
             name: 'Initial Loco',
