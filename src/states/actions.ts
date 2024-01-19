@@ -12,7 +12,7 @@ import {
     PowerResult,
     readAddressProgrammingCommand,
     rosterCommand,
-    RosterItemResult,
+    RosterItemResult, RosterListResult,
     throttleCommand,
     turnoutCommand,
     TurnoutDCCResult,
@@ -40,16 +40,16 @@ import {
     commandSend,
     commandWrite,
     powerCommandParsed,
-    rosterItemCommandParsed,
+    rosterItemCommandParsed, rosterListCommandParsed,
     throttleCommandParsed
 } from "./actions/commands";
 import {communicationsConnected, communicationsDisconnected, setCommunicationsWriter} from "./actions/communications";
 import {
     addOrUpdateLoco,
-    createRosterCommand,
+    createRosterCommand, createRosterItemCommand,
     newLocoFormSubmit,
     rosterItemUpdated,
-    userPopulateRoster
+    userPopulateRoster, userPopulateRosterItem
 } from "./actions/locos";
 import {
     createCabCommand,
@@ -103,6 +103,9 @@ function* handleParsedCommand({payload}: { type: string, payload: ParserResult<a
         case FunctionName.THROTTLE:
             yield put(throttleCommandParsed(payload));
             break;
+        case FunctionName.ROSTER_LIST:
+            yield put(rosterListCommandParsed(payload));
+            break;
         case FunctionName.ROSTER_ITEM:
             yield put(rosterItemCommandParsed(payload));
             break;
@@ -147,6 +150,15 @@ function* handleSetCommunicationsWriter({payload}: { type: string, payload: Writ
         yield put(communicationsConnected())
     } else {
         yield put(communicationsDisconnected())
+    }
+}
+
+function* handleRosterListCommandParsed({payload}: { type: string, payload: RosterListResult }) {
+    console.debug("handleRosterListCommandParsed", payload);
+    const {params: {cabIds}} = payload
+
+    for (const cabId of cabIds) {
+        yield put(userPopulateRosterItem(cabId))
     }
 }
 
@@ -340,10 +352,22 @@ function* handlePopulateRoster() {
     yield put(createRosterCommand())
 }
 
+function* handlePopulateRosterItem({payload}: { type: string, payload: number }) {
+    console.debug("handlePopulateRosterItem");
+    yield put(createRosterItemCommand(payload))
+}
+
 function* handleCreateRosterCommand() {
     console.debug("handleCreateRosterCommand");
 
     const command = rosterCommand()
+    yield put(commandSend(command))
+}
+
+function* handleCreateRosterItemCommand({payload}: { type: string, payload: number }) {
+    console.debug("handleCreateRosterItemCommand");
+
+    const command = rosterCommand({cabId: payload})
     yield put(commandSend(command))
 }
 
@@ -448,6 +472,7 @@ function* commandSaga() {
     yield takeEvery(commandParsedSuccess.type, handleParsedCommand)
     yield takeEvery(commandSend.type, handleCommandSend)
     yield takeLatest(setCommunicationsWriter.type, handleSetCommunicationsWriter)
+    yield takeEvery(rosterListCommandParsed.type, handleRosterListCommandParsed)
     yield takeEvery(rosterItemCommandParsed.type, handleRosterItemCommandParsed)
     yield takeEvery(powerCommandParsed.type, handlePowerCommandParsed)
     yield takeEvery(rosterItemUpdated.type, handleAddedOrUpdatedLoco)
@@ -466,7 +491,9 @@ function* commandSaga() {
     yield takeEvery(userChangedPower.type, handleUserChangedPower)
     yield takeEvery(createPowerCommand.type, handleCreatePowerCommand)
     yield takeEvery(userPopulateRoster.type, handlePopulateRoster)
+    yield takeEvery(userPopulateRosterItem.type, handlePopulateRosterItem)
     yield takeEvery(createRosterCommand.type, handleCreateRosterCommand)
+    yield takeEvery(createRosterItemCommand.type, handleCreateRosterItemCommand)
     yield takeEvery(userResetAndClearData.type, handleUserResetAndClearData)
     yield takeEvery(userImportsSettings.type, handleUserImportsSettings)
     yield takeEvery(importMaps.type, handleImportMaps)
