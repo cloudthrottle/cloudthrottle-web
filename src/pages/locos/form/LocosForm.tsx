@@ -1,7 +1,7 @@
 import React, {FormEvent} from "react";
 import {useDispatch} from "react-redux";
 import {HandleSubmit} from "../../../types";
-import {newLocoFormSubmit} from "../../../states/actions/locos";
+import {newLocoFormSubmit} from "../../../states/actions/locos/loco_actions";
 
 export const LocosForm = () => {
     const dispatch = useDispatch()

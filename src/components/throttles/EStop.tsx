@@ -1,6 +1,6 @@
 import {useDispatch} from "react-redux";
 import React from "react";
-import {userEmergencyStop} from "../../states/actions/throttles";
+import {userEmergencyStop} from "../../states/actions/throttles/throttle_actions";
 import {Locos} from "../../types";
 
 export const EStop = ({locos}: { locos: Locos }) => {

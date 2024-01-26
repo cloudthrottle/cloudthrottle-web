@@ -4,7 +4,9 @@ import {
     PowerResult,
     RosterItemResult,
     RosterListResult,
-    ThrottleResult
+    ThrottleResult,
+    TurnoutItemResult,
+    TurnoutListResult
 } from "@cloudthrottle/dcc-ex--commands";
 import {LogItemKind} from "../../../types";
 
@@ -15,6 +17,9 @@ export const commandParsedFailed = createAction('COMMAND_PARSED_FAILED')
 export const throttleCommandParsed = createAction<ThrottleResult>('THROTTLE_COMMAND_PARSED')
 export const rosterListCommandParsed = createAction<RosterListResult>('ROSTER_LIST_COMMAND_PARSED')
 export const rosterItemCommandParsed = createAction<RosterItemResult>('ROSTER_ITEM_COMMAND_PARSED')
+
+export const turnoutListCommandParsed = createAction<TurnoutListResult>('TURNOUT_LIST_COMMAND_PARSED')
+export const turnoutItemCommandParsed = createAction<TurnoutItemResult>('TURNOUT_ITEM_COMMAND_PARSED')
 export const powerCommandParsed = createAction<PowerResult>('POWER_COMMAND_PARSED')
 export const commandWrite = createAction<string>('COMMAND_WRITE')
 export const addCommandToLog = createAction<{ kind: LogItemKind, message: string }>('ADD_COMMAND_TO_LOG')

@@ -1,6 +1,6 @@
 import {expectSaga} from "redux-saga-test-plan";
 import commandSaga from "../../../states/actions";
-import {addOrUpdateLoco, newLocoFormSubmit, userPopulateRoster} from "../../../states/actions/locos";
+import {addOrUpdateLoco, newLocoFormSubmit, userPopulateRoster} from "../../../states/actions/locos/loco_actions";
 import {commandReceived, commandSend, rosterItemCommandParsed} from "../../../states/actions/commands";
 import {FunctionButtonKind, FunctionName, ParserStatus} from "@cloudthrottle/dcc-ex--commands";
 

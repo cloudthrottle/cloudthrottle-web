@@ -2,7 +2,6 @@ import React, {FormEvent} from "react";
 import {useDispatch} from "react-redux";
 import {HandleSubmit} from "../../../types";
 import {newTurnoutFormSubmit} from "../../../states/actions/turnouts";
-import {PopulateTurnouts} from "../../../components/turnouts/PopulateTurnoutsButton";
 
 export const TurnoutsForm = () => {
     const dispatch = useDispatch()
@@ -29,8 +28,6 @@ export const TurnoutsForm = () => {
 
     return (
         <div>
-            <PopulateTurnouts/>
-
             <h2>New Turnout</h2>
             <form action="turnouts/new" method="post" onSubmit={handleNewTurnoutSubmit}>
                 <label htmlFor="id">ID</label>

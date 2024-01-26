@@ -1,6 +1,6 @@
 import {useDispatch} from "react-redux";
 import React from "react";
-import {userPopulateTurnouts} from "../../states/actions/turnouts";
+import {userPopulateTurnouts} from "../../states/actions/turnouts/turnout_actions";
 
 export const PopulateTurnouts = () => {
     const dispatch = useDispatch()
