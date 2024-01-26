@@ -2,34 +2,24 @@ import {
     BitValue,
     cabCommand,
     DecoderAddressResult,
-    defineDCCTurnoutCommand,
     emergencyStopCommand,
     FunctionName,
     genericParser,
-    listTurnoutsCommand,
     ParserResult,
     powerCommand,
     PowerResult,
     readAddressProgrammingCommand,
-    rosterCommand,
-    RosterItemResult,
-    throttleCommand,
-    turnoutCommand,
-    TurnoutDCCResult,
-    TurnoutResult
+    throttleCommand
 } from "@cloudthrottle/dcc-ex--commands";
 import {call, put, takeEvery, takeLatest} from 'redux-saga/effects'
 import {
     AddLocoParams,
-    AddOrUpdateTurnoutParams,
-    AddTurnoutParams,
     FunctionButtonMap,
     FunctionButtonMaps,
     Loco,
     Locos,
     PartialFunctionButtons,
     ThrottleState,
-    Turnout,
     Writer
 } from "../types";
 import {
@@ -41,15 +31,26 @@ import {
     commandWrite,
     powerCommandParsed,
     rosterItemCommandParsed,
-    throttleCommandParsed
+    rosterListCommandParsed,
+    throttleCommandParsed,
+    turnoutItemCommandParsed,
+    turnoutListCommandParsed
 } from "./actions/commands";
 import {communicationsConnected, communicationsDisconnected, setCommunicationsWriter} from "./actions/communications";
 import {
     addOrUpdateLoco,
     createRosterCommand,
+    createRosterItemCommand,
+    handleCreateRosterCommand,
+    handleCreateRosterItemCommand,
+    handlePopulateRoster,
+    handlePopulateRosterItem,
+    handleRosterItemCommandParsed,
+    handleRosterListCommandParsed,
     newLocoFormSubmit,
     rosterItemUpdated,
-    userPopulateRoster
+    userPopulateRoster,
+    userPopulateRosterItem
 } from "./actions/locos";
 import {
     createCabCommand,
@@ -85,13 +86,22 @@ import {
     userDecoderReadAddress
 } from "./actions/decoders";
 import {
-    addOrUpdateTurnout,
     createDefineTurnoutCommand,
+    createTurnoutItemCommand,
+    handleCreateDefineTurnoutCommand,
+    handleCreateTurnoutItemCommand,
+    handleNewTurnoutFormSubmit,
+    handlePopulateTurnoutItem,
+    handlePopulateTurnouts,
+    handleTurnoutCommandParsed,
+    handleTurnoutItemCommandParsed,
+    handleTurnoutListCommandParsed,
+    handleUserChangedTurnoutPosition,
     newTurnoutFormSubmit,
     turnoutCommandParsed,
     turnoutDCCCommandParsed,
-    updateTurnoutPosition,
     userChangedTurnoutPosition,
+    userPopulateTurnoutItem,
     userPopulateTurnouts
 } from "./actions/turnouts";
 
@@ -102,6 +112,9 @@ function* handleParsedCommand({payload}: { type: string, payload: ParserResult<a
     switch (parser) {
         case FunctionName.THROTTLE:
             yield put(throttleCommandParsed(payload));
+            break;
+        case FunctionName.ROSTER_LIST:
+            yield put(rosterListCommandParsed(payload));
             break;
         case FunctionName.ROSTER_ITEM:
             yield put(rosterItemCommandParsed(payload));
@@ -117,6 +130,12 @@ function* handleParsedCommand({payload}: { type: string, payload: ParserResult<a
             break;
         case FunctionName.TURNOUT:
             yield put(turnoutCommandParsed(payload))
+            break;
+        case FunctionName.TURNOUT_LIST:
+            yield put(turnoutListCommandParsed(payload))
+            break;
+        case FunctionName.TURNOUT_ITEM:
+            yield put(turnoutItemCommandParsed(payload))
             break;
     }
 }
@@ -150,17 +169,6 @@ function* handleSetCommunicationsWriter({payload}: { type: string, payload: Writ
     }
 }
 
-function* handleRosterItemCommandParsed({payload}: { type: string, payload: RosterItemResult }) {
-    console.debug("handleRosterItemCommandParsed", payload);
-    const {params: {cabId, display, functionButtons}} = payload
-    const loco: AddLocoParams = {
-        cabId,
-        name: display,
-        functionButtons
-    }
-    yield put(rosterItemUpdated(loco))
-}
-
 function* handlePowerCommandParsed({payload}: { type: string, payload: PowerResult }) {
     console.debug("handlePowerCommandParsed", payload);
     const {params: {power}} = payload
@@ -188,7 +196,10 @@ function* handleUserChangedSpeed({payload}: { type: string, payload: { loco: Loc
     }))
 }
 
-function* handleUserChangedFunctionButtonValue({payload}: { type: string, payload: { loco: Loco, name: number, value: BitValue } }) {
+function* handleUserChangedFunctionButtonValue({payload}: {
+    type: string,
+    payload: { loco: Loco, name: number, value: BitValue }
+}) {
     console.debug("handleUserChangedFunctionButtonValue", payload);
     const functionButtons: PartialFunctionButtons = {
         [payload.name]: {
@@ -202,7 +213,10 @@ function* handleUserChangedFunctionButtonValue({payload}: { type: string, payloa
     }))
 }
 
-function* handleUserUpdateFunctionButtonValue({payload}: { type: string, payload: { loco: Loco, functionButtons: PartialFunctionButtons } }) {
+function* handleUserUpdateFunctionButtonValue({payload}: {
+    type: string,
+    payload: { loco: Loco, functionButtons: PartialFunctionButtons }
+}) {
     console.debug("handleUserUpdateFunctionButtonValue", payload);
 
     yield put(updateFunctionButtonState({
@@ -265,7 +279,10 @@ function* handleStopLoco({payload}: { type: string, payload: { loco: Loco } }) {
     }))
 }
 
-function* handleUserUpdateThrottleState({payload}: { type: string, payload: { loco: Loco, throttle: Partial<ThrottleState> } }) {
+function* handleUserUpdateThrottleState({payload}: {
+    type: string,
+    payload: { loco: Loco, throttle: Partial<ThrottleState> }
+}) {
     console.debug("handleUserUpdateThrottleState", payload);
     yield put(updateThrottleState(payload))
     yield put(createThrottleCommand({
@@ -274,7 +291,10 @@ function* handleUserUpdateThrottleState({payload}: { type: string, payload: { lo
     }))
 }
 
-function* handleCreateThrottleCommand({payload}: { type: string, payload: { loco: Loco, throttle: Partial<ThrottleState> } }) {
+function* handleCreateThrottleCommand({payload}: {
+    type: string,
+    payload: { loco: Loco, throttle: Partial<ThrottleState> }
+}) {
     console.debug("handleCreateThrottleCommand", payload);
     const {loco, throttle} = payload
     const newThrottle = {
@@ -311,7 +331,10 @@ function* handleCreateDecoderReadAddressCommand() {
     yield put(commandSend(command))
 }
 
-function* handleCreateCabCommand({payload}: { type: string, payload: { loco: Loco, functionButtons: PartialFunctionButtons } }) {
+function* handleCreateCabCommand({payload}: {
+    type: string,
+    payload: { loco: Loco, functionButtons: PartialFunctionButtons }
+}) {
     console.debug("handleCreateCabCommand", payload);
     const {loco, functionButtons} = payload
 
@@ -332,18 +355,6 @@ function* handleCreateEmergencyStopCommand() {
     console.debug("handleCreateEmergencyStopCommand");
 
     const command = emergencyStopCommand()
-    yield put(commandSend(command))
-}
-
-function* handlePopulateRoster() {
-    console.debug("handlePopulateRoster");
-    yield put(createRosterCommand())
-}
-
-function* handleCreateRosterCommand() {
-    console.debug("handleCreateRosterCommand");
-
-    const command = rosterCommand()
     yield put(commandSend(command))
 }
 
@@ -398,57 +409,15 @@ function* handleImportMaps({payload}: HandleImportMapsParams) {
 }
 
 
-function* handleNewTurnoutFormSubmit({payload}: { type: string, payload: AddTurnoutParams }) {
-    console.debug("handleNewTurnoutFormSubmit", payload);
-    yield put(createDefineTurnoutCommand(payload))
-    yield put(addOrUpdateTurnout(payload))
-}
-
-function* handleCreateDefineTurnoutCommand({payload}: { type: string, payload: AddTurnoutParams }) {
-    console.debug("handleCreateDefineTurnoutCommand", payload);
-
-    const command = defineDCCTurnoutCommand({
-        turnout: payload.id,
-        address: payload.address
-    })
-    yield put(commandSend(command))
-}
-
-function* handlePopulateTurnouts() {
-    console.debug("handlePopulateTurnouts");
-
-    const command = listTurnoutsCommand()
-    yield put(commandSend(command))
-}
-
-function* handleUserChangedTurnoutPosition({payload}: { type: string, payload: { turnout: Turnout, position: number } }) {
-    console.debug("handleUserChangedTurnoutPosition");
-    yield put(updateTurnoutPosition(payload))
-    const command = turnoutCommand({
-        turnout: payload.turnout.id,
-        thrown: payload.position
-    })
-    yield put(commandSend(command))
-}
-
-function* handleTurnoutCommandParsed({payload}: { type: string, payload: TurnoutResult | TurnoutDCCResult }) {
-    console.debug("handleTurnoutCommandParsed");
-
-    const {params: {id, thrown}} = payload
-    const params: AddOrUpdateTurnoutParams = {
-        id,
-        position: thrown as BitValue
-    }
-    yield put(addOrUpdateTurnout(params))
-}
-
-
 function* commandSaga() {
     yield takeEvery(commandReceived.type, handleCommandReceived);
     yield takeEvery(commandParsedSuccess.type, handleParsedCommand)
     yield takeEvery(commandSend.type, handleCommandSend)
     yield takeLatest(setCommunicationsWriter.type, handleSetCommunicationsWriter)
+    yield takeEvery(rosterListCommandParsed.type, handleRosterListCommandParsed)
     yield takeEvery(rosterItemCommandParsed.type, handleRosterItemCommandParsed)
+    yield takeEvery(turnoutListCommandParsed.type, handleTurnoutListCommandParsed)
+    yield takeEvery(turnoutItemCommandParsed.type, handleTurnoutItemCommandParsed)
     yield takeEvery(powerCommandParsed.type, handlePowerCommandParsed)
     yield takeEvery(rosterItemUpdated.type, handleAddedOrUpdatedLoco)
     yield takeEvery(newLocoFormSubmit.type, handleAddedOrUpdatedLoco)
@@ -466,7 +435,11 @@ function* commandSaga() {
     yield takeEvery(userChangedPower.type, handleUserChangedPower)
     yield takeEvery(createPowerCommand.type, handleCreatePowerCommand)
     yield takeEvery(userPopulateRoster.type, handlePopulateRoster)
+    yield takeEvery(userPopulateRosterItem.type, handlePopulateRosterItem)
+    yield takeEvery(userPopulateTurnoutItem.type, handlePopulateTurnoutItem)
     yield takeEvery(createRosterCommand.type, handleCreateRosterCommand)
+    yield takeEvery(createRosterItemCommand.type, handleCreateRosterItemCommand)
+    yield takeEvery(createTurnoutItemCommand.type, handleCreateTurnoutItemCommand)
     yield takeEvery(userResetAndClearData.type, handleUserResetAndClearData)
     yield takeEvery(userImportsSettings.type, handleUserImportsSettings)
     yield takeEvery(importMaps.type, handleImportMaps)

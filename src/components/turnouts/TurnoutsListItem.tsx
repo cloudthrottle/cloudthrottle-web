@@ -1,7 +1,7 @@
 import React, {SyntheticEvent} from "react";
 import {Turnout, TurnoutPosition} from "../../types";
 import {useDispatch} from "react-redux";
-import {userChangedTurnoutPosition} from "../../states/actions/turnouts";
+import {userChangedTurnoutPosition} from "../../states/actions/turnouts/turnout_actions";
 
 type TurnoutsListItemProps = {
     turnout: Turnout

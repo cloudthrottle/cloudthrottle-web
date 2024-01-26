@@ -8,7 +8,7 @@ import {
     userChangedSpeed,
     userEmergencyStopLoco,
     userStopLoco
-} from "../../states/actions/throttles";
+} from "../../states/actions/throttles/throttle_actions";
 
 type ThrottleProps = {
     loco: Loco

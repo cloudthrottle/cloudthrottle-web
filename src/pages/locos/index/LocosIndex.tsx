@@ -2,7 +2,7 @@ import {RootState} from "../../../states";
 import React from "react";
 import {LocosList} from "../../../components/locos";
 import {useDispatch, useSelector} from "react-redux";
-import {userPopulateRoster} from "../../../states/actions/locos";
+import {userPopulateRoster} from "../../../states/actions/locos/loco_actions";
 
 export const LocosIndex = () => {
     const locos = useSelector((state: RootState) => state.roster.entities)

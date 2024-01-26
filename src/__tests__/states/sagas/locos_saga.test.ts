@@ -1,7 +1,7 @@
 import {expectSaga} from "redux-saga-test-plan";
 import commandSaga from "../../../states/actions";
-import {addOrUpdateLoco, newLocoFormSubmit, userPopulateRoster} from "../../../states/actions/locos";
-import {commandSend, rosterItemCommandParsed} from "../../../states/actions/commands";
+import {addOrUpdateLoco, newLocoFormSubmit, userPopulateRoster} from "../../../states/actions/locos/loco_actions";
+import {commandReceived, commandSend, rosterItemCommandParsed} from "../../../states/actions/commands";
 import {FunctionButtonKind, FunctionName, ParserStatus} from "@cloudthrottle/dcc-ex--commands";
 
 describe("User adds a new Loco", () => {
@@ -17,10 +17,24 @@ describe("User adds a new Loco", () => {
 
 describe("User populates Locos from Roster", () => {
     describe("USER_POPULATE_ROSTER", () => {
-        it("puts COMMAND_SEND <J>", () => {
+        it("puts COMMAND_SEND <JR>", () => {
             return expectSaga(commandSaga)
                 .dispatch(userPopulateRoster())
-                .put(commandSend("<J>"))
+                .put(commandSend("<JR>"))
+                .silentRun()
+        })
+    })
+})
+
+describe("Roster list received", () => {
+    describe("<jR 1 22 333 4444> command received", () => {
+        it("puts many", () => {
+            return expectSaga(commandSaga)
+                .dispatch(commandReceived("<jR 1 22 333 4444>"))
+                .put(commandSend("<JR 1>"))
+                .put(commandSend("<JR 22>"))
+                .put(commandSend("<JR 333>"))
+                .put(commandSend("<JR 4444>")) // these commands should trigger a FunctionName.ROSTER_ITEM response
                 .silentRun()
         })
     })

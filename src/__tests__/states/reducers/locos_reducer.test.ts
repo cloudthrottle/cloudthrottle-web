@@ -1,5 +1,5 @@
 import {rostersReducer} from "../../../states/reducers/locos_reducer";
-import {addOrUpdateLoco} from "../../../states/actions/locos";
+import {addOrUpdateLoco} from "../../../states/actions/locos/loco_actions";
 import {Loco, LocosState} from "../../../types";
 import {userResetState} from "../../../states/actions/stores";
 
